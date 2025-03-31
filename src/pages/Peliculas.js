@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal, Form, Spinner } from 'react-bootstrap';
+import { Button, Modal, Form, Spinner, Card } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import api from '../services/api';
 import { FaEdit, FaTrash, FaPlus, FaEye } from 'react-icons/fa';
@@ -276,54 +276,29 @@ const Peliculas = () => {
                         peliculas.length > 0 ? (
                             peliculas.map((pelicula) => (
                                 <div className="col-md-4 mb-4" key={pelicula.id} onDoubleClick={() => handleViewDetails(pelicula)}>
-                                    <div className="card shadow-sm pelicula-card" style={{ height: '100%' }}>
-                                        <div className="card-body">
-                                            <h5 className="card-title">{pelicula.titulo}</h5>
-                                            <p className="card-text"><strong>Director:</strong> {pelicula.directorNombre}</p>
-                                            <p className="card-text"><strong>Género:</strong> {pelicula.generoNombre}</p>
-                                            <p className="card-text"><strong>País:</strong> {pelicula.paisNombre}</p>
-                                            <p className="card-text">{pelicula.reseña.length > 50 ? `${pelicula.reseña.substring(0, 50)}...` : pelicula.reseña}</p>
-                                            {pelicula.trailerYoutube && (
-                                                <div className="text-center">
-                                                    <iframe
-                                                        width="100%"
-                                                        height="200"
-                                                        src={`https://www.youtube.com/embed/${extractYoutubeCode(pelicula.trailerYoutube)}`}
-                                                        title="YouTube video player"
-                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                        allowFullScreen
-                                                    ></iframe>
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div className="card-footer">
-                                            <div className="d-flex justify-content-between">
-                                                <Button 
-                                                    variant="outline-info" 
-                                                    onClick={() => handleViewDetails(pelicula)}
-                                                >
-                                                    Ver Más
-                                                </Button>
-                                                <div>
-                                                    <Button 
-                                                        variant="outline-primary" 
-                                                        size="sm"
-                                                        onClick={() => handleShowModal(pelicula)}
-                                                        className="me-2"
-                                                    >
-                                                        <FaEdit />
-                                                    </Button>
-                                                    <Button 
-                                                        variant="outline-danger" 
-                                                        size="sm"
-                                                        onClick={() => handleDelete(pelicula.id)}
-                                                    >
-                                                        <FaTrash />
-                                                    </Button>
-                                                </div>
+                                    <Card className="movie-card">
+                                        <Card.Img variant="top" src={pelicula.portadaUrl} alt={pelicula.titulo} style={{ height: '300px', objectFit: 'cover' }} />
+                                        <Card.Body>
+                                            <Card.Title className="mb-3">{pelicula.titulo}</Card.Title>
+                                            <div className="movie-details">
+                                                <p className="mb-1"><strong>Director:</strong> {pelicula.directorNombre}</p>
+                                                <p className="mb-1"><strong>Género:</strong> {pelicula.generoNombre}</p>
+                                                <p className="mb-1"><strong>País:</strong> {pelicula.paisNombre}</p>
                                             </div>
-                                        </div>
-                                    </div>
+                                            <p className="movie-synopsis">{pelicula.reseña.length > 50 ? `${pelicula.reseña.substring(0, 50)}...` : pelicula.reseña}</p>
+                                            <div className="button-group">
+                                                <Button variant="info" size="sm" onClick={() => handleViewDetails(pelicula)}>
+                                                    Ver más
+                                                </Button>
+                                                <Button variant="warning" size="sm" onClick={() => handleShowModal(pelicula)}>
+                                                    Editar
+                                                </Button>
+                                                <Button variant="danger" size="sm" onClick={() => handleDelete(pelicula.id)}>
+                                                    Eliminar
+                                                </Button>
+                                            </div>
+                                        </Card.Body>
+                                    </Card>
                                 </div>
                             ))
                         ) : (

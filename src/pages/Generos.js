@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Button, Modal, Form } from 'react-bootstrap';
+import { Container, Table, Button, Modal, Form, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import api from '../services/api';
 import { FaEdit, FaTrash, FaPlus, FaEye } from 'react-icons/fa';
@@ -165,11 +165,10 @@ const Generos = () => {
     };
 
     return (
-        <div className="custom-container">
-            <h2 className="text-center mb-4" style={{ color: '#6c757d' }}>Gestión de Géneros</h2>
-            
-            <div className="table-wrapper">
-                <div className="button-container">
+        <div className="page-background">
+            <div className="custom-container">
+                <h2 className="page-title">Gestión de Géneros</h2>
+                <div className="d-flex justify-content-end mb-4">
                     <Button 
                         variant="primary" 
                         onClick={() => handleShowModal()}
@@ -178,27 +177,36 @@ const Generos = () => {
                         <FaPlus /> Nuevo Género
                     </Button>
                 </div>
-
-                <div className="table-responsive" style={{ maxHeight: '300px', overflowY: 'auto', marginTop: '30px' }}>
-                    <table className="table table-striped table-bordered shadow-sm">
-                        <thead className="bg-light text-dark">
-                            <tr>
-                                <th className="text-center">Nombre</th>
-                                <th className="text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {generos.length > 0 ? (
-                                generos.map((genero) => (
-                                    <tr key={genero.id} className="text-center">
-                                        <td>{genero.nombre}</td>
-                                        <td>
-                                            <div className="d-flex justify-content-center gap-2">
+                
+                <div className="table-wrapper">
+                    {loading ? (
+                        <div className="text-center">
+                            <Spinner animation="border" role="status">
+                                <span className="visually-hidden">Cargando...</span>
+                            </Spinner>
+                            <p className="loading-message">Cargando...</p>
+                        </div>
+                    ) : (
+                        <div className="table-responsive">
+                            <Table striped bordered hover>
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Descripción</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {generos.map((genero) => (
+                                        <tr key={genero.id}>
+                                            <td>{genero.nombre}</td>
+                                            <td>{genero.descripcion}</td>
+                                            <td>
                                                 <Button 
                                                     variant="outline-primary" 
                                                     size="sm"
                                                     onClick={() => handleShowModal(genero)}
-                                                    className="p-2"
+                                                    className="me-2"
                                                 >
                                                     <FaEdit />
                                                 </Button>
@@ -206,85 +214,72 @@ const Generos = () => {
                                                     variant="outline-danger" 
                                                     size="sm"
                                                     onClick={() => handleDelete(genero.id)}
-                                                    className="p-2"
                                                 >
                                                     <FaTrash />
                                                 </Button>
-                                                <Button 
-                                                    variant="outline-info" 
-                                                    size="sm"
-                                                    onClick={() => handleShowDetails(genero)}
-                                                    className="p-2"
-                                                >
-                                                    <FaEye />
-                                                </Button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="2" className="text-center">No hay géneros disponibles</td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        </div>
+                    )}
                 </div>
-            </div>
 
-            <Modal show={showModal} onHide={handleCloseModal}>
-                <Modal.Header closeButton className="bg-primary text-white">
-                    <Modal.Title>
-                        {generoSeleccionado ? 'Detalles del Género' : 'Nuevo Género'}
-                    </Modal.Title>
-                </Modal.Header>
-                <Form onSubmit={handleSubmit}>
+                <Modal show={showModal} onHide={handleCloseModal}>
+                    <Modal.Header closeButton className="bg-primary text-white">
+                        <Modal.Title>
+                            {generoSeleccionado ? 'Detalles del Género' : 'Nuevo Género'}
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Form onSubmit={handleSubmit}>
+                        <Modal.Body>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Nombre</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="nombre"
+                                    value={formData.nombre}
+                                    onChange={handleInputChange}
+                                    required
+                                    style={{ borderRadius: '20px' }}
+                                />
+                            </Form.Group>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={handleCloseModal}>
+                                Cerrar
+                            </Button>
+                            <Button variant="primary" type="submit">
+                                Guardar
+                            </Button>
+                        </Modal.Footer>
+                    </Form>
+                </Modal>
+
+                <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Detalles del Género</Modal.Title>
+                    </Modal.Header>
                     <Modal.Body>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Nombre</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="nombre"
-                                value={formData.nombre}
-                                onChange={handleInputChange}
-                                required
-                                style={{ borderRadius: '20px' }}
-                            />
-                        </Form.Group>
+                        <Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Nombre</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={generoSeleccionado?.nombre || ''}
+                                    disabled={true}
+                                />
+                            </Form.Group>
+                        </Form>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={handleCloseModal}>
+                        <Button variant="secondary" onClick={handleCloseDetailsModal}>
                             Cerrar
                         </Button>
-                        <Button variant="primary" type="submit">
-                            Guardar
-                        </Button>
                     </Modal.Footer>
-                </Form>
-            </Modal>
-
-            <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Detalles del Género</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Nombre</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={generoSeleccionado?.nombre || ''}
-                                disabled={true}
-                            />
-                        </Form.Group>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseDetailsModal}>
-                        Cerrar
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+                </Modal>
+            </div>
         </div>
     );
 };

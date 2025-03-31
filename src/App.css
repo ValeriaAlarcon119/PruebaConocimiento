@@ -41,6 +41,10 @@
     padding: 20px;
     max-width: 800px;
     margin: 0 auto;
+    background-color: #003366;
+    color: #f5f5f5;
+    border-radius: 10px;
+    margin-top: 20px;
 }
 
 .table-wrapper {
@@ -67,12 +71,13 @@
 .table {
     width: 100%;
     margin-bottom: 0;
-    background-color: white;
+    background-color: #003366;
+    color: #f5f5f5;
 }
 
 .table th {
-    background-color: #a2c2e0;
-    color: #333;
+    background-color: #004080;
+    color: #f5f5f5;
     position: sticky;
     top: 0;
     z-index: 1;
@@ -80,6 +85,7 @@
 
 .table td {
     vertical-align: middle;
+    color: #f5f5f5;
 }
 
 .text-primary {
@@ -129,8 +135,8 @@
 }
 
 .table th {
-    background-color: #a2c2e0;
-    color: #333;
+    background-color: #004080;
+    color: #f5f5f5;
     position: sticky;
     top: 0;
     z-index: 1;
@@ -138,20 +144,32 @@
 
 .modal-content {
     border-radius: 15px;
+    background-color: #003366;
+    color: #f5f5f5;
 }
 
 .form-control, .form-select {
     border-radius: 20px !important;
+    background-color: #f8f9fa;
+    color: #333;
+    border: 2px solid #28a745;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: #fff;
+    color: #333;
 }
 
 .card {
-    background-color: #343a40; /* Color de fondo negro */
-    color: #ffffff; /* Color del texto blanco */
-    transition: background-color 0.3s ease; /* Transición suave */
+    background-color: #003366; /* Mismo color del navbar */
+    color: #f5f5f5; /* Color blanco hueso */
+    transition: all 0.3s ease;
+    height: 100%;
 }
 
 .card:hover {
-    background-color: #495057; /* Color de fondo al pasar el mouse */
+    background-color: #004080; /* Un tono más claro al hacer hover */
+    transform: translateY(-2px);
 }
 
 .modal-body {
@@ -211,16 +229,17 @@
 .welcome-description {
     font-family: 'Roboto', sans-serif; /* Mantiene la fuente Roboto para la descripción */
     font-size: 1.2rem; /* Tamaño de fuente para la descripción */
-    color: #555; /* Color más suave para la descripción */
+    color: #f5f5f5; /* Actualiza el color de la descripción */
 }
 
 .icon {
-    color: #ffffff; /* Color de los iconos */
-    transition: color 0.3s ease; /* Transición suave */
+    color: #f5f5f5; /* Color blanco hueso */
+    transition: color 0.3s ease;
+    margin-bottom: 15px;
 }
 
 .card:hover .icon {
-    color: #00bfff; /* Color de los iconos al pasar el mouse */
+    color: #00bfff; /* Color azul claro al hacer hover */
 }
 
 footer {
@@ -276,11 +295,121 @@ input:not(:placeholder-shown), select:not([value=""]), textarea:not(:placeholder
 
 /* Estilos para el componente de contacto */
 .contact-card {
-    background-color: #343a40; /* Color de fondo negro */
-    color: #ffffff; /* Color del texto blanco */
-    transition: background-color 0.3s ease; /* Transición suave */
+    background-color: #003366;
+    color: #f5f5f5;
+    transition: all 0.3s ease;
+    border: none;
 }
 
 .contact-card:hover {
-    background-color: #495057; /* Color de fondo al pasar el mouse */
+    background-color: #004080;
+    transform: translateY(-2px);
+}
+
+.contact-card a {
+    color: #f5f5f5;
+    text-decoration: none;
+}
+
+.contact-card:hover a {
+    color: #00bfff;
+}
+
+/* Estilos específicos para las tarjetas de películas */
+.movie-card {
+    background-color: #003366;
+    color: #f5f5f5;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.movie-card .card-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.movie-card .movie-details {
+    margin: 5px 0; /* Reduce el espacio vertical entre detalles */
+}
+
+.movie-card .movie-synopsis {
+    font-style: italic;
+    color: #cccccc;
+    margin-top: 10px;
+}
+
+.movie-card .button-group {
+    margin-top: auto;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 10px 0;
+}
+
+@media (max-width: 768px) {
+    .movie-card {
+        min-height: 600px; /* Altura mínima para móviles */
+    }
+    
+    .movie-card .button-group {
+        position: relative;
+        bottom: 0;
+        width: 100%;
+    }
+}
+
+/* Ajustes para el modal de detalles de película */
+.modal-content {
+    background-color: #003366;
+    color: #f5f5f5;
+}
+
+.modal-body .movie-synopsis {
+    font-style: italic;
+    color: #cccccc;
+    margin: 15px 0;
+}
+
+.modal-header, .modal-footer {
+    border-color: #004080;
+}
+
+/* Estilos para el fondo de las páginas */
+.page-background {
+    background-color: #003366;
+    min-height: 100vh;
+    padding: 20px 0;
+}
+
+/* Estilos para las tarjetas en Welcome y Contacto */
+.welcome-card, .contact-card {
+    background-color: #003366;
+    color: #f5f5f5;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.welcome-card:hover, .contact-card:hover {
+    background-color: #004080;
+    transform: translateY(-2px);
+}
+
+/* Ajustes para los títulos de las páginas */
+.page-title {
+    color: #f5f5f5;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Ajustes para los mensajes de carga */
+.loading-message {
+    color: #f5f5f5;
+}
+
+/* Ajustes para los botones en las tablas */
+.table .btn {
+    margin: 0 2px;
 }

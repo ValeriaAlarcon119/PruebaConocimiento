@@ -4,18 +4,18 @@ import { FaFacebook, FaInstagram, FaLinkedin, FaPhone } from 'react-icons/fa';
 
 const Contacto = () => {
     return (
-        <Container className="mt-4">
-            <h1 className="text-center mb-4">Contáctanos</h1>
-            <Card className="contact-card">
-                <Card.Body>
-                    <Card.Title>Estamos aquí para ayudarte</Card.Title>
+        <Container fluid className="mt-4 px-4">
+            <h1 className="text-center mb-4 welcome-title">Contáctanos</h1>
+            <Card className="contact-card mb-4">
+                <Card.Body className="text-center">
+                    <Card.Title className="mb-3">Estamos aquí para ayudarte</Card.Title>
                     <Card.Text>
-                        Si tienes preguntas, no dudes en contactarnos.
+                        Si tienes preguntas, no dudes en contactarnos a través de cualquiera de nuestros canales.
                     </Card.Text>
                 </Card.Body>
             </Card>
             <Row className="justify-content-center">
-                <Col md={5} className="mb-4">
+                <Col lg={3} md={6} className="mb-4">
                     <Card className="h-100 text-decoration-none">
                         <Card.Body className="d-flex flex-column align-items-center">
                             <FaFacebook size={40} className="icon" />
@@ -28,7 +28,7 @@ const Contacto = () => {
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col md={5} className="mb-4">
+                <Col lg={3} md={6} className="mb-4">
                     <Card className="h-100 text-decoration-none">
                         <Card.Body className="d-flex flex-column align-items-center">
                             <FaInstagram size={40} className="icon" />
@@ -41,7 +41,7 @@ const Contacto = () => {
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col md={5} className="mb-4">
+                <Col lg={3} md={6} className="mb-4">
                     <Card className="h-100 text-decoration-none">
                         <Card.Body className="d-flex flex-column align-items-center">
                             <FaLinkedin size={40} className="icon" />
@@ -54,7 +54,7 @@ const Contacto = () => {
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col md={5} className="mb-4">
+                <Col lg={3} md={6} className="mb-4">
                     <Card className="h-100 text-decoration-none">
                         <Card.Body className="d-flex flex-column align-items-center">
                             <FaPhone size={40} className="icon" />

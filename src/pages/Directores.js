@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Button, Modal, Form } from 'react-bootstrap';
+import { Container, Button, Modal, Form, Table, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import api from '../services/api';
 import { FaEdit, FaTrash, FaPlus, FaEye } from 'react-icons/fa';
@@ -178,11 +178,10 @@ const Directores = () => {
     };
 
     return (
-        <div className="custom-container">
-            <h2 className="text-center mb-4" style={{ color: '#6c757d' }}>Gestión de Directores</h2>
-            
-            <div className="table-wrapper">
-                <div className="button-container">
+        <div className="page-background">
+            <div className="custom-container">
+                <h2 className="page-title">Gestión de Directores</h2>
+                <div className="d-flex justify-content-end mb-4">
                     <Button 
                         variant="primary" 
                         onClick={() => handleShowModal()}
@@ -191,31 +190,36 @@ const Directores = () => {
                         <FaPlus /> Nuevo Director
                     </Button>
                 </div>
-
-                <div className="table-responsive" style={{ maxHeight: '300px', overflowY: 'auto', marginTop: '30px' }}>
-                    <table className="table table-striped table-bordered shadow-sm">
-                        <thead className="bg-light text-dark">
-                            <tr>
-                                <th className="text-center">Nombre</th>
-                                <th className="text-center">Apellido</th>
-                                <th className="text-center">País</th>
-                                <th className="text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {directores.length > 0 ? (
-                                directores.map((director) => (
-                                    <tr key={director.id} className="text-center">
-                                        <td>{director.nombre}</td>
-                                        <td>{director.apellido}</td>
-                                        <td>{paises.find(p => p.id === director.paisId)?.nombre}</td>
-                                        <td>
-                                            <div className="d-flex justify-content-center gap-2">
+                
+                <div className="table-wrapper">
+                    {loading ? (
+                        <div className="text-center">
+                            <Spinner animation="border" role="status">
+                                <span className="visually-hidden">Cargando...</span>
+                            </Spinner>
+                            <p className="loading-message">Cargando...</p>
+                        </div>
+                    ) : (
+                        <div className="table-responsive">
+                            <Table striped bordered hover>
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Apellido</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {directores.map((director) => (
+                                        <tr key={director.id}>
+                                            <td>{director.nombre}</td>
+                                            <td>{director.apellido}</td>
+                                            <td>
                                                 <Button 
                                                     variant="outline-primary" 
                                                     size="sm"
                                                     onClick={() => handleShowModal(director)}
-                                                    className="p-2"
+                                                    className="me-2"
                                                 >
                                                     <FaEdit />
                                                 </Button>
@@ -223,29 +227,16 @@ const Directores = () => {
                                                     variant="outline-danger" 
                                                     size="sm"
                                                     onClick={() => handleDelete(director.id)}
-                                                    className="p-2"
                                                 >
                                                     <FaTrash />
                                                 </Button>
-                                                <Button 
-                                                    variant="outline-info" 
-                                                    size="sm"
-                                                    onClick={() => handleShowDetails(director)}
-                                                    className="p-2"
-                                                >
-                                                    <FaEye />
-                                                </Button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="4" className="text-center">No hay directores disponibles</td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        </div>
+                    )}
                 </div>
             </div>
 
