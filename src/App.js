@@ -1,18 +1,21 @@
 import React from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
+
+// Componentes
 import Layout from './components/Layout/Layout';
+import Login from './components/Auth/Login';
 import Welcome from './pages/Welcome';
 import Peliculas from './pages/Peliculas';
 import Directores from './pages/Directores';
 import Generos from './pages/Generos';
 import Paises from './pages/Paises';
 import Actores from './pages/Actores';
-import Login from './components/Auth/Login';
 import Contacto from './pages/Contacto';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const PrivateRoute = ({ children }) => {
     const token = localStorage.getItem('token');
@@ -24,6 +27,9 @@ const PrivateRoute = ({ children }) => {
 };
 
 function App() {
+    // Verificar si el usuario está autenticado
+    const isAuthenticated = localStorage.getItem('token') !== null;
+
     return (
         <Router>
             <Layout>
@@ -45,39 +51,39 @@ function App() {
 
                     {/* Rutas protegidas */}
                     <Route path="/welcome" element={
-                        <PrivateRoute>
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <Welcome />
-                        </PrivateRoute>
+                        </ProtectedRoute>
                     } />
                     <Route path="/peliculas" element={
-                        <PrivateRoute>
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <Peliculas />
-                        </PrivateRoute>
+                        </ProtectedRoute>
                     } />
                     <Route path="/directores" element={
-                        <PrivateRoute>
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <Directores />
-                        </PrivateRoute>
+                        </ProtectedRoute>
                     } />
                     <Route path="/generos" element={
-                        <PrivateRoute>
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <Generos />
-                        </PrivateRoute>
+                        </ProtectedRoute>
                     } />
                     <Route path="/paises" element={
-                        <PrivateRoute>
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <Paises />
-                        </PrivateRoute>
+                        </ProtectedRoute>
                     } />
                     <Route path="/actores" element={
-                        <PrivateRoute>
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <Actores />
-                        </PrivateRoute>
+                        </ProtectedRoute>
                     } />
                     <Route path="/contacto" element={
-                        <PrivateRoute>
+                        <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <Contacto />
-                        </PrivateRoute>
+                        </ProtectedRoute>
                     } />
 
                     {/* Ruta por defecto y catch-all */}

@@ -12,7 +12,8 @@ const Generos = () => {
     const [showModal, setShowModal] = useState(false);
     const [generoSeleccionado, setGeneroSeleccionado] = useState(null);
     const [formData, setFormData] = useState({
-        nombre: ''
+        nombre: '',
+        descripcion: ''
     });
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -77,12 +78,14 @@ const Generos = () => {
         if (genero) {
             setGeneroSeleccionado(genero);
             setFormData({
-                nombre: genero.nombre
+                nombre: genero.nombre,
+                descripcion: genero.descripcion
             });
         } else {
             setGeneroSeleccionado(null);
             setFormData({
-                nombre: ''
+                nombre: '',
+                descripcion: ''
             });
         }
         setShowModal(true);
@@ -92,7 +95,8 @@ const Generos = () => {
         setShowModal(false);
         setGeneroSeleccionado(null);
         setFormData({
-            nombre: ''
+            nombre: '',
+            descripcion: ''
         });
     };
 
@@ -168,6 +172,9 @@ const Generos = () => {
         <div className="page-background">
             <div className="custom-container">
                 <h2 className="page-title">Gestión de Géneros</h2>
+                <p className="text-center text-white mb-4">
+                    Aquí encuentras información sobre los géneros cinematográficos y puedes gestionar esta información
+                </p>
                 <div className="d-flex justify-content-end mb-4">
                     <Button 
                         variant="primary" 
@@ -202,21 +209,18 @@ const Generos = () => {
                                             <td>{genero.nombre}</td>
                                             <td>{genero.descripcion}</td>
                                             <td>
-                                                <Button 
-                                                    variant="outline-primary" 
-                                                    size="sm"
+                                                <FaEye 
+                                                    className="icon" 
+                                                    onClick={() => handleShowDetails(genero)}
+                                                />
+                                                <FaEdit 
+                                                    className="icon" 
                                                     onClick={() => handleShowModal(genero)}
-                                                    className="me-2"
-                                                >
-                                                    <FaEdit />
-                                                </Button>
-                                                <Button 
-                                                    variant="outline-danger" 
-                                                    size="sm"
+                                                />
+                                                <FaTrash 
+                                                    className="icon" 
                                                     onClick={() => handleDelete(genero.id)}
-                                                >
-                                                    <FaTrash />
-                                                </Button>
+                                                />
                                             </td>
                                         </tr>
                                     ))}
@@ -229,7 +233,7 @@ const Generos = () => {
                 <Modal show={showModal} onHide={handleCloseModal}>
                     <Modal.Header closeButton className="bg-primary text-white">
                         <Modal.Title>
-                            {generoSeleccionado ? 'Detalles del Género' : 'Nuevo Género'}
+                            {generoSeleccionado ? 'Editar Género' : 'Nuevo Género'}
                         </Modal.Title>
                     </Modal.Header>
                     <Form onSubmit={handleSubmit}>
@@ -245,9 +249,20 @@ const Generos = () => {
                                     style={{ borderRadius: '20px' }}
                                 />
                             </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Descripción</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    name="descripcion"
+                                    value={formData.descripcion}
+                                    onChange={handleInputChange}
+                                    required
+                                    style={{ borderRadius: '20px' }}
+                                />
+                            </Form.Group>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button variant="secondary" onClick={handleCloseModal}>
+                            <Button variant="danger" onClick={handleCloseModal}>
                                 Cerrar
                             </Button>
                             <Button variant="primary" type="submit">
@@ -271,10 +286,18 @@ const Generos = () => {
                                     disabled={true}
                                 />
                             </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Descripción</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    value={generoSeleccionado?.descripcion || ''}
+                                    disabled={true}
+                                />
+                            </Form.Group>
                         </Form>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={handleCloseDetailsModal}>
+                        <Button variant="danger" onClick={handleCloseDetailsModal}>
                             Cerrar
                         </Button>
                     </Modal.Footer>

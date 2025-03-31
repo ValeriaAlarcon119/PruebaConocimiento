@@ -235,9 +235,27 @@
 }
 
 .icon {
-    color: #f5f5f5; /* Color blanco hueso */
+    font-size: 1.2rem;
+    margin: 0 5px;
+    cursor: pointer;
+    color: #ffffff;
     transition: color 0.3s ease;
-    margin-bottom: 15px;
+}
+
+.icon:hover {
+    color: #00bfff;
+}
+
+.icon.fa-edit:hover {
+    color: #003366;
+}
+
+.icon.fa-trash:hover {
+    color: #dc3545;
+}
+
+.icon.fa-eye:hover {
+    color: #00bfff;
 }
 
 .card:hover .icon {
