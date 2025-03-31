@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Form, Button, Card, Container } from 'react-bootstrap';
+import { Form, Button, Card, Container, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import api from '../../services/api';
 
@@ -10,6 +10,7 @@ const Login = () => {
         username: '',
         password: ''
     });
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         setCredentials({
@@ -20,13 +21,37 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
+            console.log('Intentando login con:', credentials);
             const response = await api.post('/auth/login', credentials);
-            localStorage.setItem('token', response.data.token);
-            toast.success('¡Inicio de sesión exitoso!');
-            navigate('/welcome');
+            console.log('Respuesta del servidor:', response.data);
+            
+            if (response.data && response.data.token) {
+                localStorage.setItem('token', response.data.token);
+                toast.success('¡Inicio de sesión exitoso!');
+                navigate('/peliculas');
+            } else {
+                toast.error('Error: Respuesta del servidor inválida');
+            }
         } catch (error) {
-            toast.error('Error al iniciar sesión. Verifica tus credenciales.');
+            console.error('Error completo:', error);
+            let errorMessage = 'Error al iniciar sesión';
+            
+            if (error.response) {
+                console.log('Error response:', error.response);
+                if (error.response.status === 401) {
+                    errorMessage = 'Usuario o contraseña incorrectos';
+                } else if (error.response.data && error.response.data.message) {
+                    errorMessage = error.response.data.message;
+                }
+            } else if (error.request) {
+                errorMessage = 'No se pudo conectar con el servidor';
+            }
+            
+            toast.error(errorMessage);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -44,6 +69,7 @@ const Login = () => {
                                 value={credentials.username}
                                 onChange={handleChange}
                                 required
+                                disabled={loading}
                             />
                         </Form.Group>
                         <Form.Group className="mb-3">
@@ -54,10 +80,31 @@ const Login = () => {
                                 value={credentials.password}
                                 onChange={handleChange}
                                 required
+                                disabled={loading}
                             />
                         </Form.Group>
-                        <Button variant="primary" type="submit" className="w-100" style={{ padding: '10px' }}>
-                            Iniciar Sesión
+                        <Button 
+                            variant="primary" 
+                            type="submit" 
+                            className="w-100" 
+                            style={{ padding: '10px' }}
+                            disabled={loading}
+                        >
+                            {loading ? (
+                                <>
+                                    <Spinner
+                                        as="span"
+                                        animation="border"
+                                        size="sm"
+                                        role="status"
+                                        aria-hidden="true"
+                                        className="me-2"
+                                    />
+                                    Iniciando sesión...
+                                </>
+                            ) : (
+                                'Iniciar Sesión'
+                            )}
                         </Button>
                     </Form>
                 </Card.Body>
