@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/PruebaConocimiento/static/css/main.971fe0da.css",
-    "main.js": "/PruebaConocimiento/static/js/main.002d282e.js",
+    "main.js": "/PruebaConocimiento/static/js/main.dd70857e.js",
     "static/js/453.8ab44547.chunk.js": "/PruebaConocimiento/static/js/453.8ab44547.chunk.js",
     "static/media/fa-solid-900.ttf": "/PruebaConocimiento/static/media/fa-solid-900.2582b0e4bcf85eceead0.ttf",
     "static/media/fa-brands-400.ttf": "/PruebaConocimiento/static/media/fa-brands-400.1815e00441357e01619e.ttf",
@@ -13,11 +13,11 @@
     "static/media/fa-v4compatibility.woff2": "/PruebaConocimiento/static/media/fa-v4compatibility.ea8f94e1d22e0d35ccd4.woff2",
     "index.html": "/PruebaConocimiento/index.html",
     "main.971fe0da.css.map": "/PruebaConocimiento/static/css/main.971fe0da.css.map",
-    "main.002d282e.js.map": "/PruebaConocimiento/static/js/main.002d282e.js.map",
+    "main.dd70857e.js.map": "/PruebaConocimiento/static/js/main.dd70857e.js.map",
     "453.8ab44547.chunk.js.map": "/PruebaConocimiento/static/js/453.8ab44547.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.971fe0da.css",
-    "static/js/main.002d282e.js"
+    "static/js/main.dd70857e.js"
   ]
 }
