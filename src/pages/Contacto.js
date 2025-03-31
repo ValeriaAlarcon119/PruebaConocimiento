@@ -5,10 +5,15 @@ import { FaFacebook, FaInstagram, FaLinkedin, FaPhone } from 'react-icons/fa';
 const Contacto = () => {
     return (
         <Container className="mt-4">
-            <h2 className="text-center mb-4">Contáctanos</h2>
-            <p className="text-center mb-4">
-                Si tienes preguntas o comentarios, no dudes en contactarnos a través de nuestras redes sociales o nuestro número de teléfono.
-            </p>
+            <h1 className="text-center mb-4">Contáctanos</h1>
+            <Card className="contact-card">
+                <Card.Body>
+                    <Card.Title>Estamos aquí para ayudarte</Card.Title>
+                    <Card.Text>
+                        Si tienes preguntas, no dudes en contactarnos.
+                    </Card.Text>
+                </Card.Body>
+            </Card>
             <Row className="justify-content-center">
                 <Col md={5} className="mb-4">
                     <Card className="h-100 text-decoration-none">
