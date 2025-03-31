@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/PruebaConocimiento/static/css/main.fa5c5314.css",
-    "main.js": "/PruebaConocimiento/static/js/main.16c76536.js",
+    "main.css": "/PruebaConocimiento/static/css/main.b4e41508.css",
+    "main.js": "/PruebaConocimiento/static/js/main.1a717f4c.js",
     "static/js/453.8ab44547.chunk.js": "/PruebaConocimiento/static/js/453.8ab44547.chunk.js",
     "static/media/fa-solid-900.ttf": "/PruebaConocimiento/static/media/fa-solid-900.2582b0e4bcf85eceead0.ttf",
     "static/media/fa-brands-400.ttf": "/PruebaConocimiento/static/media/fa-brands-400.1815e00441357e01619e.ttf",
@@ -12,12 +12,12 @@
     "static/media/fa-v4compatibility.ttf": "/PruebaConocimiento/static/media/fa-v4compatibility.da94ef451f4969af06e6.ttf",
     "static/media/fa-v4compatibility.woff2": "/PruebaConocimiento/static/media/fa-v4compatibility.ea8f94e1d22e0d35ccd4.woff2",
     "index.html": "/PruebaConocimiento/index.html",
-    "main.fa5c5314.css.map": "/PruebaConocimiento/static/css/main.fa5c5314.css.map",
-    "main.16c76536.js.map": "/PruebaConocimiento/static/js/main.16c76536.js.map",
+    "main.b4e41508.css.map": "/PruebaConocimiento/static/css/main.b4e41508.css.map",
+    "main.1a717f4c.js.map": "/PruebaConocimiento/static/js/main.1a717f4c.js.map",
     "453.8ab44547.chunk.js.map": "/PruebaConocimiento/static/js/453.8ab44547.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.fa5c5314.css",
-    "static/js/main.16c76536.js"
+    "static/css/main.b4e41508.css",
+    "static/js/main.1a717f4c.js"
   ]
 }
