@@ -1,6 +1,17 @@
-# Sistema de Gestión de Series Animadas - Frontend
+# Sistema de Gestión de Peliculas - Frontend
 
-Este es el frontend de la aplicación de gestión de series animadas, desarrollado con React.
+Este es el frontend de la aplicación de gestión de películas, desarrollado con React. La aplicación permite a los usuarios gestionar información sobre películas, directores, géneros, países y actores.
+
+## Despliegue
+
+La aplicación está desplegada y disponible en la siguiente URL:
+
+- **URL de la aplicación:** [https://valeriaalarcon119.github.io/PruebaConocimiento/](https://valeriaalarcon119.github.io/PruebaConocimiento/)
+
+### Notas sobre el Despliegue
+
+- **Validación de Credenciales:** Al intentar iniciar sesión, si las credenciales son incorrectas, se mostrará un mensaje de error. Asegúrate de usar el usuario `adminsql` y la contraseña `MiC0ntraseñ@Segura!`.
+- **Paciencia con el Servidor:** Ten en cuenta que los servicios gratuitos de Azure pueden experimentar caídas ocasionales. Sin embargo, el backend ya está funcionando y se puede acceder a las rutas.
 
 ## Requisitos
 
@@ -8,31 +19,33 @@ Este es el frontend de la aplicación de gestión de series animadas, desarrolla
 - npm (incluido con Node.js)
 - Backend de la aplicación (API REST)
 
-## Configuración
+## Configuración para Pruebas Locales
+
+Si deseas ejecutar la aplicación en tu entorno local, sigue estos pasos:
 
 1. Clonar el repositorio:
-```bash
-git clone [URL_DEL_REPOSITORIO]
-cd frontend
-```
+   ```bash
+   git clone https://github.com/ValeriaAlarcon119/PruebaConocimiento
+   cd frontend
+   ```
 
 2. Instalar dependencias:
-```bash
-npm install
-```
+   ```bash
+   npm install
+   ```
 
 3. Configurar las variables de entorno:
-Crear un archivo `.env` en la raíz del proyecto con el siguiente contenido:
-```
-REACT_APP_API_URL=http://localhost:5248/api
-```
+   Crear un archivo `.env` en la raíz del proyecto con el siguiente contenido:
+   ```
+   REACT_APP_API_URL=http://localhost:5248/api
+   ```
 
 4. Iniciar la aplicación:
-```bash
-npm start
-```
+   ```bash
+   npm start
+   ```
 
-La aplicación estará disponible en `http://localhost:3000`
+La aplicación estará disponible en `http://localhost:3000`.
 
 ## Estructura del Proyecto
 
@@ -96,17 +109,8 @@ frontend/
 - `npm run build`: Crea la versión de producción
 - `npm run eject`: Expone la configuración de Create React App
 
-## Contribución
 
-1. Fork el repositorio
-2. Crear una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abrir un Pull Request
 
-## Licencia
-
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
 
 ## Descripción
 
@@ -177,4 +181,4 @@ Para la inserción de imágenes en las películas:
 
 - Actualmente, se debe proporcionar la URL de la imagen de la portada. Puedes usar cualquier enlace de imagen válido.
 - Para pruebas, puedes usar la siguiente URL de imagen de portada: 
-  - `"/images/portada1.jpg"` (asegúrate de que esta imagen esté disponible en tu proyecto).
+  - `"/images/portada1.jpg"`,`"/images/portada2.jpg"`,`"/images/portada3.jpg"`,`"/images/portada4.jpg"`.

@@ -10,7 +10,6 @@ const api = axios.create({
     withCredentials: false
 });
 
-// Interceptor para agregar el token a todas las peticiones
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
@@ -24,12 +23,10 @@ api.interceptors.request.use(
     }
 );
 
-// Interceptor para manejar errores de respuesta
 api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response) {
-            // Solo redirigir al login si no estamos ya en la página de login
             if (error.response.status === 401 && !window.location.hash.includes('/login')) {
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
