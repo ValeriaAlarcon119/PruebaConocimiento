@@ -482,11 +482,64 @@ input:not(:placeholder-shown), select:not([value=""]), textarea:not(:placeholder
     margin-bottom: 2rem;
 }
 
-/* Ajustes para los títulos de las páginas */
+/* Estilos para los títulos de las páginas */
 .page-title {
     color: #ffffff;
     text-align: center;
     margin-bottom: 30px;
+    text-shadow: 
+        2px 2px 0 rgba(0, 0, 0, 0.3), 
+        4px 4px 0 rgba(0, 0, 0, 0.2), 
+        6px 6px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para las tablas */
+.table {
+    text-align: center;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+/* Estilos para los iconos en las tablas */
+.table .icon {
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    margin: 0 5px;
+}
+
+.table .fa-edit {
+    color: #003366; /* Azul oscuro para editar */
+}
+
+.table .fa-trash {
+    color: #dc3545; /* Rojo para eliminar */
+}
+
+.table .fa-eye {
+    color: #00bfff; /* Azul claro para ver más */
+}
+
+.table .icon:hover {
+    opacity: 0.8;
+}
+
+/* Estilos para los modales */
+.modal-footer {
+    justify-content: center;
+}
+
+.modal-footer .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.modal-footer .btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
 }
 
 /* Ajustes para los mensajes de carga */

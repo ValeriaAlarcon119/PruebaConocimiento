@@ -181,6 +181,9 @@ const Directores = () => {
         <div className="page-background">
             <div className="custom-container">
                 <h2 className="page-title">Gestión de Directores</h2>
+                <p className="text-center text-white mb-4">
+                    Aquí encuentras información sobre los directores y puedes gestionar esta información
+                </p>
                 <div className="d-flex justify-content-end mb-4">
                     <Button 
                         variant="primary" 
@@ -205,7 +208,7 @@ const Directores = () => {
                                 <thead>
                                     <tr>
                                         <th>Nombre</th>
-                                        <th>Apellido</th>
+                                        <th>Nacionalidad</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
@@ -213,23 +216,20 @@ const Directores = () => {
                                     {directores.map((director) => (
                                         <tr key={director.id}>
                                             <td>{director.nombre}</td>
-                                            <td>{director.apellido}</td>
+                                            <td>{director.nacionalidad}</td>
                                             <td>
-                                                <Button 
-                                                    variant="outline-primary" 
-                                                    size="sm"
+                                                <FaEye 
+                                                    className="icon" 
+                                                    onClick={() => handleShowDetails(director)}
+                                                />
+                                                <FaEdit 
+                                                    className="icon" 
                                                     onClick={() => handleShowModal(director)}
-                                                    className="me-2"
-                                                >
-                                                    <FaEdit />
-                                                </Button>
-                                                <Button 
-                                                    variant="outline-danger" 
-                                                    size="sm"
+                                                />
+                                                <FaTrash 
+                                                    className="icon" 
                                                     onClick={() => handleDelete(director.id)}
-                                                >
-                                                    <FaTrash />
-                                                </Button>
+                                                />
                                             </td>
                                         </tr>
                                     ))}
@@ -238,97 +238,80 @@ const Directores = () => {
                         </div>
                     )}
                 </div>
-            </div>
 
-            <Modal show={showModal} onHide={handleCloseModal}>
-                <Modal.Header closeButton className="bg-primary text-white">
-                    <Modal.Title>
-                        {directorSeleccionado ? 'Detalles del Director' : 'Nuevo Director'}
-                    </Modal.Title>
-                </Modal.Header>
-                <Form onSubmit={handleSubmit}>
+                <Modal show={showModal} onHide={handleCloseModal}>
+                    <Modal.Header closeButton className="bg-primary text-white">
+                        <Modal.Title>
+                            {directorSeleccionado ? 'Editar Director' : 'Nuevo Director'}
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Form onSubmit={handleSubmit}>
+                        <Modal.Body>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Nombre</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="nombre"
+                                    value={formData.nombre}
+                                    onChange={handleInputChange}
+                                    required
+                                    style={{ borderRadius: '20px' }}
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Nacionalidad</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="nacionalidad"
+                                    value={formData.nacionalidad}
+                                    onChange={handleInputChange}
+                                    required
+                                    style={{ borderRadius: '20px' }}
+                                />
+                            </Form.Group>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="danger" onClick={handleCloseModal}>
+                                Cerrar
+                            </Button>
+                            <Button variant="primary" type="submit">
+                                Guardar
+                            </Button>
+                        </Modal.Footer>
+                    </Form>
+                </Modal>
+
+                <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Detalles del Director</Modal.Title>
+                    </Modal.Header>
                     <Modal.Body>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Nombre</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="nombre"
-                                value={formData.nombre}
-                                onChange={handleInputChange}
-                                required
-                                style={{ borderRadius: '20px' }}
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Apellido</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="apellido"
-                                value={formData.apellido}
-                                onChange={handleInputChange}
-                                required
-                                style={{ borderRadius: '20px' }}
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>País</Form.Label>
-                            <Form.Select
-                                name="paisId"
-                                value={formData.paisId}
-                                onChange={handleInputChange}
-                                required
-                                style={{ borderRadius: '20px' }}
-                            >
-                                <option value="">Seleccione un país</option>
-                                {paises.map((pais) => (
-                                    <option key={pais.id} value={pais.id}>
-                                        {pais.nombre}
-                                    </option>
-                                ))}
-                            </Form.Select>
-                        </Form.Group>
+                        <Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Nombre</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={directorSeleccionado?.nombre || ''}
+                                    disabled={true}
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Nacionalidad</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={directorSeleccionado?.nacionalidad || ''}
+                                    disabled={true}
+                                />
+                            </Form.Group>
+                        </Form>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={handleCloseModal}>
+                        <Button variant="danger" onClick={handleCloseDetailsModal}>
                             Cerrar
                         </Button>
-                        <Button variant="primary" type="submit">
-                            Guardar
-                        </Button>
                     </Modal.Footer>
-                </Form>
-            </Modal>
-
-            <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Detalles del Director</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Nombre</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={directorSeleccionado?.nombre || ''}
-                                disabled={true}
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Apellido</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={directorSeleccionado?.apellido || ''}
-                                disabled={true}
-                            />
-                        </Form.Group>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseDetailsModal}>
-                        Cerrar
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+                </Modal>
+            </div>
         </div>
     );
 };

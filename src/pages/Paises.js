@@ -159,6 +159,9 @@ const Paises = () => {
         <div className="page-background">
             <div className="custom-container">
                 <h2 className="page-title">Gestión de Países</h2>
+                <p className="text-center text-white mb-4">
+                    Aquí encuentras información sobre los países y puedes gestionar esta información
+                </p>
                 <div className="d-flex justify-content-end mb-4">
                     <Button 
                         variant="primary" 
@@ -191,21 +194,18 @@ const Paises = () => {
                                         <tr key={pais.id}>
                                             <td>{pais.nombre}</td>
                                             <td>
-                                                <Button 
-                                                    variant="outline-primary" 
-                                                    size="sm"
+                                                <FaEye 
+                                                    className="icon" 
+                                                    onClick={() => handleShowDetails(pais)}
+                                                />
+                                                <FaEdit 
+                                                    className="icon" 
                                                     onClick={() => handleShowModal(pais)}
-                                                    className="me-2"
-                                                >
-                                                    <FaEdit />
-                                                </Button>
-                                                <Button 
-                                                    variant="outline-danger" 
-                                                    size="sm"
+                                                />
+                                                <FaTrash 
+                                                    className="icon" 
                                                     onClick={() => handleDelete(pais.id)}
-                                                >
-                                                    <FaTrash />
-                                                </Button>
+                                                />
                                             </td>
                                         </tr>
                                     ))}
@@ -237,7 +237,7 @@ const Paises = () => {
                             </Form.Group>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button variant="secondary" onClick={handleCloseModal}>
+                            <Button variant="danger" onClick={handleCloseModal}>
                                 Cerrar
                             </Button>
                             <Button variant="primary" type="submit">
@@ -265,7 +265,7 @@ const Paises = () => {
                         </Form>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={handleCloseDetailsModal}>
+                        <Button variant="danger" onClick={handleCloseDetailsModal}>
                             Cerrar
                         </Button>
                     </Modal.Footer>
