@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Button, Modal, Form } from 'react-bootstrap';
+import { Container, Table, Button, Modal, Form } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import api from '../services/api';
 import { FaEdit, FaTrash, FaPlus, FaEye } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
 import '../App.css';
+import { useNavigate } from 'react-router-dom';
 
 const Paises = () => {
     const navigate = useNavigate();
@@ -17,13 +17,14 @@ const Paises = () => {
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [peliculas, setPeliculas] = useState([]);
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
 
     useEffect(() => {
         const checkAuth = () => {
             const token = localStorage.getItem('token');
             if (!token) {
                 toast.error('Por favor, inicie sesión para continuar.');
-                navigate('/login'); // Redirige al login si no está autenticado
+                navigate('/login');
             } else {
                 setIsAuthenticated(true);
             }
@@ -33,21 +34,14 @@ const Paises = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (!isAuthenticated) return; // No continuar si no está autenticado
+            if (!isAuthenticated) return;
             setLoading(true);
             await cargarPaises();
+            await cargarPeliculas();
             setLoading(false);
         };
         fetchData();
     }, [isAuthenticated]);
-
-    useEffect(() => {
-        const fetchPeliculas = async () => {
-            const response = await api.get('/peliculas');
-            setPeliculas(response.data.$values || []);
-        };
-        fetchPeliculas();
-    }, []);
 
     const cargarPaises = async () => {
         try {
@@ -56,10 +50,19 @@ const Paises = () => {
         } catch (error) {
             if (error.response && error.response.status === 401) {
                 toast.error('Sesión expirada. Por favor, inicie sesión nuevamente.');
-                navigate('/login'); // Redirige al login si la sesión ha expirado
+                navigate('/login');
             } else {
                 toast.error('Error al cargar los países');
             }
+        }
+    };
+
+    const cargarPeliculas = async () => {
+        try {
+            const response = await api.get('/peliculas');
+            setPeliculas(response.data.$values || []);
+        } catch (error) {
+            toast.error('Error al cargar las películas');
         }
     };
 
@@ -86,6 +89,11 @@ const Paises = () => {
         });
     };
 
+    const handleCloseDetailsModal = () => {
+        setShowDetailsModal(false);
+        setPaisSeleccionado(null);
+    };
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -94,56 +102,57 @@ const Paises = () => {
         });
     };
 
+    const handleShowDetails = (pais) => {
+        setPaisSeleccionado(pais);
+        setShowDetailsModal(true);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const paisData = {
-                id: paisSeleccionado ? paisSeleccionado.id : 0,
-                nombre: formData.nombre
-            };
+            // Verificar si ya existe un país con el mismo nombre
+            const paisExistente = paises.find(
+                p => p.nombre.toLowerCase() === formData.nombre.toLowerCase() &&
+                    p.id !== paisSeleccionado?.id
+            );
+
+            if (paisExistente) {
+                toast.error('Ya existe un país con este nombre');
+                return;
+            }
 
             if (paisSeleccionado) {
-                await api.put(`/paises/${paisSeleccionado.id}`, paisData);
+                await api.put(`/paises/${paisSeleccionado.id}`, formData);
                 toast.success('País actualizado exitosamente');
             } else {
-                await api.post('/paises', paisData);
-                toast.success('Nuevo país creado exitosamente');
+                await api.post('/paises', formData);
+                toast.success('País creado exitosamente');
             }
             handleCloseModal();
             cargarPaises();
         } catch (error) {
-            console.error("Error al guardar el país:", error.response?.data || error.message);
-            if (error.response?.data?.message) {
-                toast.error(error.response.data.message);
-            } else {
-                toast.error('Error al guardar el país');
-            }
+            toast.error('Error al guardar el país');
         }
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm('¿Estás seguro de que deseas eliminar este país?')) {
-            try {
+        try {
+            // Verificar si el país está en uso en películas
+            const paisEnUso = peliculas.some(pelicula => pelicula.paisId === id);
+
+            if (paisEnUso) {
+                toast.error('No es permitido borrar este país porque está en uso en la aplicación');
+                return;
+            }
+
+            if (window.confirm('¿Estás seguro de que deseas eliminar este país?')) {
                 await api.delete(`/paises/${id}`);
                 toast.success('País eliminado exitosamente');
                 cargarPaises();
-            } catch (error) {
-                console.error("Error al eliminar país:", error.response?.data || error.message);
-                if (error.response?.data?.error) {
-                    toast.error(error.response.data.error);
-                } else {
-                    toast.error('No se puede eliminar el país porque está en uso.');
-                }
             }
+        } catch (error) {
+            toast.error('Error al eliminar el país');
         }
-    };
-
-    const handleViewDetails = (pais) => {
-        setPaisSeleccionado(pais);
-        setFormData({
-            nombre: pais.nombre
-        });
-        setShowModal(true);
     };
 
     return (
@@ -195,7 +204,7 @@ const Paises = () => {
                                                 <Button 
                                                     variant="outline-info" 
                                                     size="sm"
-                                                    onClick={() => handleViewDetails(pais)}
+                                                    onClick={() => handleShowDetails(pais)}
                                                     className="p-2"
                                                 >
                                                     <FaEye />
@@ -214,10 +223,11 @@ const Paises = () => {
                 </div>
             </div>
 
+            {/* Modal de Edición/Creación */}
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton className="bg-primary text-white">
                     <Modal.Title>
-                        {paisSeleccionado ? 'Detalles del País' : 'Nuevo País'}
+                        {paisSeleccionado ? 'Editar País' : 'Nuevo País'}
                     </Modal.Title>
                 </Modal.Header>
                 <Form onSubmit={handleSubmit}>
@@ -243,6 +253,30 @@ const Paises = () => {
                         </Button>
                     </Modal.Footer>
                 </Form>
+            </Modal>
+
+            {/* Modal de Detalles */}
+            <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Detalles del País</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Nombre</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={paisSeleccionado?.nombre || ''}
+                                disabled={true}
+                            />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseDetailsModal}>
+                        Cerrar
+                    </Button>
+                </Modal.Footer>
             </Modal>
         </div>
     );

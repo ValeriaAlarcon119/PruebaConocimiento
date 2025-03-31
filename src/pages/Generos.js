@@ -17,6 +17,7 @@ const Generos = () => {
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [peliculas, setPeliculas] = useState([]);
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
 
     useEffect(() => {
         const checkAuth = () => {
@@ -103,56 +104,64 @@ const Generos = () => {
         });
     };
 
+    const handleShowDetails = (genero) => {
+        setGeneroSeleccionado(genero);
+        setShowDetailsModal(true);
+    };
+
+    const handleCloseDetailsModal = () => {
+        setShowDetailsModal(false);
+        setGeneroSeleccionado(null);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const generoData = {
-                id: generoSeleccionado ? generoSeleccionado.id : 0,
-                nombre: formData.nombre
-            };
+            // Verificar si ya existe un género con el mismo nombre
+            const generoExistente = generos.find(
+                g => g.nombre.toLowerCase() === formData.nombre.toLowerCase() &&
+                    g.id !== generoSeleccionado?.id
+            );
+
+            if (generoExistente) {
+                toast.error('Ya existe un género con este nombre');
+                return;
+            }
 
             if (generoSeleccionado) {
-                await api.put(`/generos/${generoSeleccionado.id}`, generoData);
+                await api.put(`/generos/${generoSeleccionado.id}`, formData);
                 toast.success('Género actualizado exitosamente');
             } else {
-                await api.post('/generos', generoData);
-                toast.success('Nuevo género creado exitosamente');
+                await api.post('/generos', formData);
+                toast.success('Género creado exitosamente');
             }
             handleCloseModal();
             cargarGeneros();
         } catch (error) {
-            console.error("Error al guardar el género:", error.response?.data || error.message);
-            if (error.response?.data?.message) {
-                toast.error(error.response.data.message);
-            } else {
-                toast.error('Error al guardar el género');
-            }
+            toast.error('Error al guardar el género');
         }
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm('¿Estás seguro de que deseas eliminar este género?')) {
-            try {
+        try {
+            // Verificar si el género está en uso
+            const response = await api.get(`/peliculas`);
+            const peliculas = response.data.$values || [];
+            const generoEnUso = peliculas.some(pelicula => pelicula.generoId === id);
+
+            if (generoEnUso) {
+                toast.error('No es permitido borrar este género porque está en uso en la aplicación');
+                return;
+            }
+
+            if (window.confirm('¿Estás seguro de que deseas eliminar este género?')) {
                 await api.delete(`/generos/${id}`);
                 toast.success('Género eliminado exitosamente');
                 cargarGeneros();
-            } catch (error) {
-                console.error("Error al eliminar género:", error.response?.data || error.message);
-                if (error.response?.data?.error) {
-                    toast.error(error.response.data.error);
-                } else {
-                    toast.error('No se puede eliminar el género porque está en uso.');
-                }
             }
+        } catch (error) {
+            toast.error('Error al eliminar el género');
         }
-    };
-
-    const handleViewDetails = (genero) => {
-        setGeneroSeleccionado(genero);
-        setFormData({
-            nombre: genero.nombre
-        });
-        setShowModal(true);
     };
 
     return (
@@ -204,7 +213,7 @@ const Generos = () => {
                                                 <Button 
                                                     variant="outline-info" 
                                                     size="sm"
-                                                    onClick={() => handleViewDetails(genero)}
+                                                    onClick={() => handleShowDetails(genero)}
                                                     className="p-2"
                                                 >
                                                     <FaEye />
@@ -252,6 +261,29 @@ const Generos = () => {
                         </Button>
                     </Modal.Footer>
                 </Form>
+            </Modal>
+
+            <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Detalles del Género</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Nombre</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={generoSeleccionado?.nombre || ''}
+                                disabled={true}
+                            />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseDetailsModal}>
+                        Cerrar
+                    </Button>
+                </Modal.Footer>
             </Modal>
         </div>
     );

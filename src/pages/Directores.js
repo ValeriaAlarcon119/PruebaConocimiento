@@ -20,6 +20,7 @@ const Directores = () => {
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [peliculas, setPeliculas] = useState([]);
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
 
     useEffect(() => {
         const checkAuth = () => {
@@ -115,62 +116,65 @@ const Directores = () => {
         });
     };
 
+    const handleShowDetails = (director) => {
+        setDirectorSeleccionado(director);
+        setShowDetailsModal(true);
+    };
+
+    const handleCloseDetailsModal = () => {
+        setShowDetailsModal(false);
+        setDirectorSeleccionado(null);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const directorData = {
-                id: directorSeleccionado ? directorSeleccionado.id : 0,
-                nombre: formData.nombre,
-                apellido: formData.apellido,
-                paisId: parseInt(formData.paisId)
-            };
+            // Verificar si ya existe un director con el mismo nombre y apellido
+            const directorExistente = directores.find(
+                d => d.nombre.toLowerCase() === formData.nombre.toLowerCase() &&
+                    d.apellido.toLowerCase() === formData.apellido.toLowerCase() &&
+                    d.id !== directorSeleccionado?.id
+            );
+
+            if (directorExistente) {
+                toast.error('Ya existe un director con este nombre y apellido');
+                return;
+            }
 
             if (directorSeleccionado) {
-                await api.put(`/directores/${directorSeleccionado.id}`, directorData);
+                await api.put(`/directores/${directorSeleccionado.id}`, formData);
                 toast.success('Director actualizado exitosamente');
             } else {
-                await api.post('/directores', directorData);
-                toast.success('Nuevo director creado exitosamente');
+                await api.post('/directores', formData);
+                toast.success('Director creado exitosamente');
             }
             handleCloseModal();
             cargarDirectores();
         } catch (error) {
-            console.error("Error al guardar el director:", error.response?.data || error.message);
-            if (error.response?.data?.message) {
-                toast.error(error.response.data.message);
-            } else {
-                toast.error('Error al guardar el director');
-            }
+            toast.error('Error al guardar el director');
         }
     };
-    
 
     const handleDelete = async (id) => {
-        if (window.confirm('¿Estás seguro de que deseas eliminar este director?')) {
-            try {
+        try {
+            // Verificar si el director está en uso
+            const response = await api.get(`/peliculas`);
+            const peliculas = response.data.$values || [];
+            const directorEnUso = peliculas.some(pelicula => pelicula.directorId === id);
+
+            if (directorEnUso) {
+                toast.error('No es permitido borrar este director porque está en uso en la aplicación');
+                return;
+            }
+
+            if (window.confirm('¿Estás seguro de que deseas eliminar este director?')) {
                 await api.delete(`/directores/${id}`);
                 toast.success('Director eliminado exitosamente');
                 cargarDirectores();
-            } catch (error) {
-                console.error("Error al eliminar director:", error.response?.data || error.message);
-                if (error.response?.data?.error) {
-                    toast.error(error.response.data.error);
-                } else {
-                    toast.error('No se puede eliminar el director porque está en uso.');
-                }
             }
+        } catch (error) {
+            toast.error('Error al eliminar el director');
         }
-    };
-    
-
-    const handleViewDetails = (director) => {
-        setDirectorSeleccionado(director);
-        setShowModal(true);
-        setFormData({
-            nombre: director.nombre,
-            apellido: director.apellido,
-            paisId: director.paisId.toString()
-        });
     };
 
     return (
@@ -226,7 +230,7 @@ const Directores = () => {
                                                 <Button 
                                                     variant="outline-info" 
                                                     size="sm"
-                                                    onClick={() => handleViewDetails(director)}
+                                                    onClick={() => handleShowDetails(director)}
                                                     className="p-2"
                                                 >
                                                     <FaEye />
@@ -302,6 +306,37 @@ const Directores = () => {
                         </Button>
                     </Modal.Footer>
                 </Form>
+            </Modal>
+
+            <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Detalles del Director</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Nombre</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={directorSeleccionado?.nombre || ''}
+                                disabled={true}
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Apellido</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={directorSeleccionado?.apellido || ''}
+                                disabled={true}
+                            />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseDetailsModal}>
+                        Cerrar
+                    </Button>
+                </Modal.Footer>
             </Modal>
         </div>
     );
