@@ -23,23 +23,21 @@ const Login = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            console.log('Intentando login con:', credentials);
             const response = await api.post('/auth/login', credentials);
-            console.log('Respuesta del servidor:', response.data);
             
             if (response.data && response.data.token) {
                 localStorage.setItem('token', response.data.token);
+                localStorage.setItem('user', JSON.stringify(response.data.user));
                 toast.success('¡Inicio de sesión exitoso!');
                 navigate('/welcome');
             } else {
                 toast.error('Error: Respuesta del servidor inválida');
             }
         } catch (error) {
-            console.error('Error completo:', error);
+            console.error('Error de login:', error);
             let errorMessage = 'Error al iniciar sesión';
             
             if (error.response) {
-                console.log('Error response:', error.response);
                 if (error.response.status === 401) {
                     errorMessage = 'Usuario o contraseña incorrectos';
                 } else if (error.response.data && error.response.data.message) {
@@ -70,6 +68,7 @@ const Login = () => {
                                 onChange={handleChange}
                                 required
                                 disabled={loading}
+                                className="login-input"
                             />
                         </Form.Group>
                         <Form.Group className="mb-3">
@@ -81,12 +80,13 @@ const Login = () => {
                                 onChange={handleChange}
                                 required
                                 disabled={loading}
+                                className="login-input"
                             />
                         </Form.Group>
                         <Button 
                             variant="primary" 
                             type="submit" 
-                            className="w-100" 
+                            className="w-100 login-button" 
                             style={{ padding: '10px' }}
                             disabled={loading}
                         >

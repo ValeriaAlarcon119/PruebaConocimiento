@@ -7,10 +7,10 @@ const api = axios.create({
     headers: {
         'Content-Type': 'application/json'
     },
-    withCredentials: false // Importante para CORS
+    withCredentials: false
 });
 
-// Interceptor para agregar el token de autenticación
+// Interceptor para agregar el token a todas las peticiones
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
@@ -24,14 +24,17 @@ api.interceptors.request.use(
     }
 );
 
-// Interceptor para manejar errores
+// Interceptor para manejar errores de respuesta
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        console.error('API Error:', error.response || error);
-        if (error.response?.status === 401) {
-            localStorage.removeItem('token');
-            window.location.href = '/login';
+        if (error.response) {
+            // Solo redirigir al login si no estamos ya en la página de login
+            if (error.response.status === 401 && !window.location.pathname.includes('/login')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+            }
         }
         return Promise.reject(error);
     }

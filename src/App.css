@@ -176,10 +176,6 @@
     height: 100%;
 }
 
-.card:hover {
-    background-color: #004080;
-    transform: translateY(-2px);
-}
 
 .modal-body {
     display: flex;
@@ -205,12 +201,21 @@
     padding: 15px;
 }
 
-.navbar-brand, .nav-link {
+.navbar-brand {
     color: #ffffff !important;
+    transition: color 0.3s ease;
 }
 
-.navbar-brand:hover, .nav-link:hover {
-    color: #00bfff !important; 
+.navbar-brand:hover {
+    color: #e6f3ff !important;
+}
+
+.navbar-brand img {
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover img {
+    transform: scale(1.1);
 }
 
 .navbar-collapse {
@@ -585,4 +590,81 @@ input:not(:placeholder-shown), select:not([value=""]), textarea:not(:placeholder
 
 .table thead tr {
     background-color: #b3d9ff !important;
+}
+
+.nav-link {
+    color: #ffffff !important;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #e6f3ff !important;
+}
+
+.login-input {
+    border: 1px solid #ddd !important;
+    border-radius: 4px !important;
+    padding: 8px 12px !important;
+    transition: all 0.3s ease !important;
+    background-color: #ffffff !important;
+}
+
+.login-input:focus {
+    border-color: #e6f3ff !important;
+    box-shadow: 0 0 5px rgba(230, 243, 255, 0.5) !important;
+    outline: none !important;
+}
+
+.login-button {
+    background-color: #007bff !important;
+    border: none !important;
+    transition: all 0.3s ease !important;
+    color: #ffffff !important;
+}
+
+.login-button:hover {
+    background-color: #e6f3ff !important;
+    color: #007bff !important;
+}
+
+.login-button:disabled {
+    background-color: #cccccc !important;
+    color: #666666 !important;
+}
+
+.form-control:focus {
+    border-color: #e6f3ff !important;
+    box-shadow: 0 0 5px rgba(230, 243, 255, 0.5) !important;
+    outline: none !important;
+}
+
+/* Sobrescribir estilos de Bootstrap para el formulario de login */
+.form-control, .form-select {
+    border: 1px solid #ddd !important;
+    background-color: #ffffff !important;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #e6f3ff !important;
+    box-shadow: 0 0 5px rgba(230, 243, 255, 0.5) !important;
+    outline: none !important;
+}
+
+/* Quitar el azul oscuro del botón de Bootstrap */
+.btn-primary {
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+}
+
+.btn-primary:hover {
+    background-color: #e6f3ff !important;
+    border-color: #e6f3ff !important;
+    color: #007bff !important;
+}
+
+/* Quitar el azul oscuro del focus de los inputs */
+input:focus, select:focus, textarea:focus {
+    border-color: #e6f3ff !important;
+    box-shadow: 0 0 5px rgba(230, 243, 255, 0.5) !important;
+    outline: none !important;
 }

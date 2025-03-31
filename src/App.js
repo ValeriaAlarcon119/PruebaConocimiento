@@ -33,9 +33,9 @@ function App() {
                     pauseOnHover
                     theme="colored"
                 />
-                <Routes>
+               <Routes>
+                    <Route path="/" element={<Navigate to="/login" />} />
                     <Route path="/login" element={<Login />} />
-
                     <Route path="/welcome" element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <Welcome />
@@ -71,8 +71,8 @@ function App() {
                             <Contacto />
                         </ProtectedRoute>
                     } />
-
                 </Routes>
+
             </Layout>
         </Router>
     );

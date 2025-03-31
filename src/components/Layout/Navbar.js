@@ -16,7 +16,19 @@ const NavigationBar = () => {
     return (
         <Navbar bg="dark" variant="dark" expand="lg" className="navbar">
             <Container>
-                <Navbar.Brand as={Link} to="/welcome" style={{ color: '#add890' }}>Cine Estudio</Navbar.Brand>
+                <Navbar.Brand as={Link} to="/welcome" style={{ color: '#add890', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <img 
+                        src={process.env.PUBLIC_URL + '/images/logo.jpg'} 
+                        alt="Logo" 
+                        style={{ 
+                            width: '35px', 
+                            height: '35px', 
+                            borderRadius: '50%', 
+                            objectFit: 'cover'
+                        }} 
+                    />
+                    Cine Estudio
+                </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
