@@ -277,9 +277,20 @@ const Peliculas = () => {
                             peliculas.map((pelicula) => (
                                 <div className="col-md-4 mb-4" key={pelicula.id} onDoubleClick={() => handleViewDetails(pelicula)}>
                                     <Card className="movie-card">
-                                        <Card.Img variant="top" src={pelicula.portadaUrl} alt={pelicula.titulo} style={{ height: '300px', objectFit: 'cover' }} />
                                         <Card.Body>
                                             <Card.Title className="mb-3">{pelicula.titulo}</Card.Title>
+                                            {pelicula.trailerYoutube && (
+                                                <div className="mb-3">
+                                                    <iframe
+                                                        width="100%"
+                                                        height="200"
+                                                        src={`https://www.youtube.com/embed/${extractYoutubeCode(pelicula.trailerYoutube)}`}
+                                                        title="YouTube video player"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                        allowFullScreen
+                                                    ></iframe>
+                                                </div>
+                                            )}
                                             <div className="movie-details">
                                                 <p className="mb-1"><strong>Director:</strong> {pelicula.directorNombre}</p>
                                                 <p className="mb-1"><strong>Género:</strong> {pelicula.generoNombre}</p>
