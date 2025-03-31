@@ -433,25 +433,40 @@ input:not(:placeholder-shown), select:not([value=""]), textarea:not(:placeholder
 }
 
 /* Estilos para las tarjetas en Welcome y Contacto */
-.welcome-card, .contact-card {
-    background-color: #000000 !important; /* Negro puro */
+.welcome-card {
+    background-color: #000000 !important;
     color: #ffffff !important;
     transition: all 0.3s ease;
     border: none;
 }
 
-.welcome-card:hover, .contact-card:hover {
+.welcome-card:hover {
     background-color: #ffffff !important;
     color: #000000 !important;
 }
 
-.welcome-card .icon, .contact-card .icon {
+.welcome-card .icon {
     color: #ffffff;
     transition: color 0.3s ease;
 }
 
-.welcome-card:hover .icon, .contact-card:hover .icon {
-    color: #00bfff; /* Azul claro al hacer hover */
+.welcome-card:hover .icon {
+    color: #00bfff;
+}
+
+.welcome-card a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.welcome-card:hover a {
+    color: #000000;
+}
+
+.welcome-description {
+    color: #000000 !important;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
 }
 
 /* Ajustes para los títulos de las páginas */
