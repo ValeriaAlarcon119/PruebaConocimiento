@@ -30,10 +30,10 @@ api.interceptors.response.use(
     (error) => {
         if (error.response) {
             // Solo redirigir al login si no estamos ya en la página de login
-            if (error.response.status === 401 && !window.location.pathname.includes('/login')) {
+            if (error.response.status === 401 && !window.location.hash.includes('/login')) {
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
-                window.location.href = '/login';
+                window.location.href = '/PruebaConocimiento/#/login';
             }
         }
         return Promise.reject(error);

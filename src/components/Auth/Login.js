@@ -29,7 +29,7 @@ const Login = () => {
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('user', JSON.stringify(response.data.user));
                 toast.success('¡Inicio de sesión exitoso!');
-                navigate('/welcome');
+                window.location.href = '/PruebaConocimiento/#/welcome';
             } else {
                 toast.error('Error: Respuesta del servidor inválida');
             }
