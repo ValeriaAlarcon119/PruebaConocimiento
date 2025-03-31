@@ -1,84 +1,72 @@
 import React from 'react';
-import { Card, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { FaUserTie, FaFilm, FaUsers, FaVideo, FaGlobe, FaEnvelope } from 'react-icons/fa';
-import '../App.css';
+import { FaUser, FaFilm, FaGlobe, FaPhone } from 'react-icons/fa'; // Importa los íconos
 
 const Welcome = () => {
     return (
-        <div className="welcome-container">
-            <h1 className="welcome-title">Bienvenido a SeriesApp</h1>
-            <p className="welcome-description">Tu plataforma para gestionar películas y series</p>
-            
-            <Row className="justify-content-center g-4">
-                <Col xs={12} sm={6} md={4}>
-                    <Link to="/directores" className="text-decoration-none">
-                        <Card className="card">
-                            <Card.Body className="text-center">
-                                <FaUserTie className="icon" size={40} />
-                                <Card.Title>Directores</Card.Title>
-                                <Card.Text>Gestiona los directores de tus películas</Card.Text>
-                            </Card.Body>
-                        </Card>
-                    </Link>
+        <Container fluid className="mt-4 px-4">
+            <h1 className="text-center mb-4 welcome-title">¡Bienvenido a Cine Estudio!</h1>
+            <p className="text-center mb-4 welcome-description">
+                Tu plataforma para gestionar toda la información sobre películas y series animadas.
+            </p>
+            <Row className="justify-content-center">
+                <Col lg={4} md={6} className="mb-4">
+                    <Card as={Link} to="/directores" className="h-100 text-decoration-none">
+                        <Card.Body className="d-flex flex-column align-items-center">
+                            <FaUser size={50} className="icon" /> {/* Icono de personas para Directores */}
+                            <Card.Title>Directores</Card.Title>
+                            <Card.Text>Gestiona la información de los directores de las películas.</Card.Text>
+                        </Card.Body>
+                    </Card>
                 </Col>
-                <Col xs={12} sm={6} md={4}>
-                    <Link to="/generos" className="text-decoration-none">
-                        <Card className="card">
-                            <Card.Body className="text-center">
-                                <FaFilm className="icon" size={40} />
-                                <Card.Title>Géneros</Card.Title>
-                                <Card.Text>Administra los géneros cinematográficos</Card.Text>
-                            </Card.Body>
-                        </Card>
-                    </Link>
+                <Col lg={4} md={6} className="mb-4">
+                    <Card as={Link} to="/generos" className="h-100 text-decoration-none">
+                        <Card.Body className="d-flex flex-column align-items-center">
+                            <FaFilm size={50} className="icon" /> {/* Icono de claqueta para Géneros */}
+                            <Card.Title>Géneros</Card.Title>
+                            <Card.Text>Administra los diferentes géneros de películas.</Card.Text>
+                        </Card.Body>
+                    </Card>
                 </Col>
-                <Col xs={12} sm={6} md={4}>
-                    <Link to="/actores" className="text-decoration-none">
-                        <Card className="card">
-                            <Card.Body className="text-center">
-                                <FaUsers className="icon" size={40} />
-                                <Card.Title>Actores</Card.Title>
-                                <Card.Text>Gestiona el elenco de tus películas</Card.Text>
-                            </Card.Body>
-                        </Card>
-                    </Link>
+                <Col lg={4} md={6} className="mb-4">
+                    <Card as={Link} to="/paises" className="h-100 text-decoration-none">
+                        <Card.Body className="d-flex flex-column align-items-center">
+                            <FaGlobe size={50} className="icon" /> {/* Icono de globo terráqueo para Países */}
+                            <Card.Title>Países</Card.Title>
+                            <Card.Text>Gestiona los países de origen de las películas.</Card.Text>
+                        </Card.Body>
+                    </Card>
                 </Col>
-                <Col xs={12} sm={6} md={4}>
-                    <Link to="/peliculas" className="text-decoration-none">
-                        <Card className="card">
-                            <Card.Body className="text-center">
-                                <FaVideo className="icon" size={40} />
-                                <Card.Title>Películas</Card.Title>
-                                <Card.Text>Administra tu catálogo de películas</Card.Text>
-                            </Card.Body>
-                        </Card>
-                    </Link>
+                <Col lg={4} md={6} className="mb-4">
+                    <Card as={Link} to="/actores" className="h-100 text-decoration-none">
+                        <Card.Body className="d-flex flex-column align-items-center">
+                            <FaUser size={50} className="icon" /> {/* Icono de personas para Actores */}
+                            <Card.Title>Actores</Card.Title>
+                            <Card.Text>Administra la información de los actores de las películas.</Card.Text>
+                        </Card.Body>
+                    </Card>
                 </Col>
-                <Col xs={12} sm={6} md={4}>
-                    <Link to="/paises" className="text-decoration-none">
-                        <Card className="card">
-                            <Card.Body className="text-center">
-                                <FaGlobe className="icon" size={40} />
-                                <Card.Title>Países</Card.Title>
-                                <Card.Text>Gestiona los países de producción</Card.Text>
-                            </Card.Body>
-                        </Card>
-                    </Link>
+                <Col lg={4} md={6} className="mb-4">
+                    <Card as={Link} to="/peliculas" className="h-100 text-decoration-none">
+                        <Card.Body className="d-flex flex-column align-items-center">
+                            <FaFilm size={50} className="icon" /> {/* Icono de películas */}
+                            <Card.Title>Películas</Card.Title>
+                            <Card.Text>Gestiona el catálogo completo de películas.</Card.Text>
+                        </Card.Body>
+                    </Card>
                 </Col>
-                <Col xs={12} sm={6} md={4}>
-                    <Link to="/contacto" className="text-decoration-none">
-                        <Card className="card">
-                            <Card.Body className="text-center">
-                                <FaEnvelope className="icon" size={40} />
-                                <Card.Title>Contáctanos</Card.Title>
-                                <Card.Text>Ponte en contacto con nosotros</Card.Text>
-                            </Card.Body>
-                        </Card>
-                    </Link>
+                <Col lg={4} md={6} className="mb-4">
+                    <Card as={Link} to="/contacto" className="h-100 text-decoration-none">
+                        <Card.Body className="d-flex flex-column align-items-center">
+                            <FaPhone size={50} className="icon" /> {/* Icono de teléfono para Contacto */}
+                            <Card.Title>Contáctanos</Card.Title>
+                            <Card.Text>Si tienes preguntas, no dudes en contactarnos.</Card.Text>
+                        </Card.Body>
+                    </Card>
                 </Col>
             </Row>
-        </div>
+        </Container>
     );
 };
 

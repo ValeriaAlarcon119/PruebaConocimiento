@@ -287,15 +287,21 @@ const Peliculas = () => {
                                             </div>
                                             <p className="movie-synopsis">{pelicula.reseña.length > 50 ? `${pelicula.reseña.substring(0, 50)}...` : pelicula.reseña}</p>
                                             <div className="button-group">
-                                                <Button variant="info" size="sm" onClick={() => handleViewDetails(pelicula)}>
-                                                    Ver más
+                                                <Button 
+                                                    variant="link" 
+                                                    className="btn-ver-mas"
+                                                    onClick={() => handleViewDetails(pelicula)}
+                                                >
+                                                    <FaEye /> Ver más
                                                 </Button>
-                                                <Button variant="warning" size="sm" onClick={() => handleShowModal(pelicula)}>
-                                                    Editar
-                                                </Button>
-                                                <Button variant="danger" size="sm" onClick={() => handleDelete(pelicula.id)}>
-                                                    Eliminar
-                                                </Button>
+                                                <FaEdit 
+                                                    className="icon" 
+                                                    onClick={() => handleShowModal(pelicula)}
+                                                />
+                                                <FaTrash 
+                                                    className="icon" 
+                                                    onClick={() => handleDelete(pelicula.id)}
+                                                />
                                             </div>
                                         </Card.Body>
                                     </Card>
