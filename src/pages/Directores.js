@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Container, Button, Modal, Form, Table, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import api from '../services/api';
@@ -47,19 +47,25 @@ const Directores = () => {
         fetchData();
     }, [isAuthenticated]);
 
-    const cargarDirectores = async () => {
+    const cargarDirectores = useCallback(async () => {
+        setLoading(true);
         try {
-            const response = await api.get('/directores');
-            setDirectores(response.data.$values || []);
-        } catch (error) {
-            if (error.response && error.response.status === 401) {
-                toast.error('Sesión expirada. Por favor, inicie sesión nuevamente.');
-                navigate('/login'); // Redirige al login si la sesión ha expirado
-            } else {
-                toast.error('Error al cargar los directores');
+            const response = await fetch('http://localhost:8080/api/directores', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setDirectores(data);
             }
+        } catch (error) {
+            console.error('Error al cargar directores:', error);
+            toast.error('Error al cargar los directores');
+        } finally {
+            setLoading(false);
         }
-    };
+    }, []);
 
     const cargarPaises = async () => {
         try {

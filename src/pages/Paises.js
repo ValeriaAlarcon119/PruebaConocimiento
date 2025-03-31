@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Container, Table, Button, Modal, Form, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import api from '../services/api';
@@ -43,19 +43,25 @@ const Paises = () => {
         fetchData();
     }, [isAuthenticated]);
 
-    const cargarPaises = async () => {
+    const cargarPaises = useCallback(async () => {
+        setLoading(true);
         try {
-            const response = await api.get('/paises');
-            setPaises(response.data.$values || []);
-        } catch (error) {
-            if (error.response && error.response.status === 401) {
-                toast.error('Sesión expirada. Por favor, inicie sesión nuevamente.');
-                navigate('/login');
-            } else {
-                toast.error('Error al cargar los países');
+            const response = await fetch('http://localhost:8080/api/paises', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setPaises(data);
             }
+        } catch (error) {
+            console.error('Error al cargar países:', error);
+            toast.error('Error al cargar los países');
+        } finally {
+            setLoading(false);
         }
-    };
+    }, []);
 
     const cargarPeliculas = async () => {
         try {
