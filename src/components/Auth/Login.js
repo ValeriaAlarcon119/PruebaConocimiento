@@ -30,7 +30,7 @@ const Login = () => {
             if (response.data && response.data.token) {
                 localStorage.setItem('token', response.data.token);
                 toast.success('¡Inicio de sesión exitoso!');
-                navigate('/peliculas');
+                navigate('/welcome');
             } else {
                 toast.error('Error: Respuesta del servidor inválida');
             }

@@ -340,7 +340,7 @@ const Peliculas = () => {
                 <Modal.Body className="modal-body-scroll">
                     <div className="text-center">
                         <img 
-                            src={peliculaSeleccionada?.portadaUrl || "/images/portada1.jpg"} 
+                            src={peliculaSeleccionada?.portadaUrl || `${process.env.PUBLIC_URL}/images/portada1.jpg`}
                             alt="Portada" 
                             className="img-fluid mb-3" 
                             style={{ maxWidth: '100%', height: 'auto' }}
