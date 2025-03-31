@@ -71,12 +71,12 @@
 .table {
     width: 100%;
     margin-bottom: 0;
-    background-color: #003366;
-    color: #f5f5f5;
+    background-color: #ffffff;
+    color: #000000;
 }
 
 .table th {
-    background-color: #004080;
+    background-color: #003366;
     color: #f5f5f5;
     position: sticky;
     top: 0;
@@ -85,7 +85,7 @@
 
 .table td {
     vertical-align: middle;
-    color: #f5f5f5;
+    color: #000000;
 }
 
 .text-primary {
@@ -161,15 +161,15 @@
 }
 
 .card {
-    background-color: #003366; /* Mismo color del navbar */
-    color: #f5f5f5; /* Color blanco hueso */
+    background-color: #003366;
+    color: #f5f5f5;
     transition: all 0.3s ease;
     height: 100%;
 }
 
 .card:hover {
-    background-color: #004080; /* Un tono más claro al hacer hover */
-    transform: translateY(-2px);
+    background-color: #ffffff;
+    color: #000000;
 }
 
 .modal-body {
@@ -213,17 +213,17 @@
 }
 
 .welcome-title {
-    font-family: 'Pacifico', cursive; /* Cambia a la fuente de Google para el título */
-    color: #ffffff; /* Color del título */
-    font-size: 2.5rem; /* Tamaño de fuente más grande */
-    text-align: center; /* Asegúrate de que esté centrado */
+    font-family: 'Pacifico', cursive;
+    color: #003366;
+    font-size: 2.5rem;
+    text-align: center;
     position: relative;
-    display: block; /* Cambia a block para asegurar que ocupe todo el ancho */
-    margin: 0 auto; /* Asegura que el margen sea automático para centrar */
+    display: block;
+    margin: 0 auto;
     text-shadow: 
         2px 2px 0 rgba(0, 0, 0, 0.3), 
         4px 4px 0 rgba(0, 0, 0, 0.2), 
-        6px 6px 0 rgba(0, 0, 0, 0.1); /* Sombra más pronunciada para el efecto 3D */
+        6px 6px 0 rgba(0, 0, 0, 0.1);
 }
 
 .welcome-description {
@@ -233,13 +233,13 @@
 }
 
 .icon {
-    color: #f5f5f5; /* Color blanco hueso */
+    color: #f5f5f5;
     transition: color 0.3s ease;
     margin-bottom: 15px;
 }
 
 .card:hover .icon {
-    color: #00bfff; /* Color azul claro al hacer hover */
+    color: #00bfff;
 }
 
 footer {
@@ -317,11 +317,17 @@ input:not(:placeholder-shown), select:not([value=""]), textarea:not(:placeholder
 
 /* Estilos específicos para las tarjetas de películas */
 .movie-card {
-    background-color: #003366;
-    color: #f5f5f5;
+    background-color: #ffffff;
+    color: #000000;
     height: 100%;
     display: flex;
     flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+.movie-card:hover {
+    background-color: #003366;
+    color: #f5f5f5;
 }
 
 .movie-card .card-body {
@@ -331,12 +337,12 @@ input:not(:placeholder-shown), select:not([value=""]), textarea:not(:placeholder
 }
 
 .movie-card .movie-details {
-    margin: 5px 0; /* Reduce el espacio vertical entre detalles */
+    margin: 2px 0;
 }
 
 .movie-card .movie-synopsis {
     font-style: italic;
-    color: #cccccc;
+    color: inherit;
     margin-top: 10px;
 }
 
