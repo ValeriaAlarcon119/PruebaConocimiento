@@ -63,22 +63,19 @@ const Generos = () => {
     const cargarGeneros = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:8080/api/generos', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            if (response.ok) {
-                const data = await response.json();
-                setGeneros(data);
-            }
+            const response = await api.get('/generos');
+            setGeneros(response.data.$values || []);
         } catch (error) {
-            console.error('Error al cargar géneros:', error);
-            toast.error('Error al cargar los géneros');
+            if (error.response && error.response.status === 401) {
+                toast.error('Sesión expirada. Por favor, inicie sesión nuevamente.');
+                navigate('/login');
+            } else {
+                toast.error('Error al cargar los géneros');
+            }
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [navigate]);
 
     useEffect(() => {
         cargarGeneros();
@@ -131,17 +128,6 @@ const Generos = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Verificar si ya existe un género con el mismo nombre
-            const generoExistente = generos.find(
-                g => g.nombre.toLowerCase() === formData.nombre.toLowerCase() &&
-                    g.id !== generoSeleccionado?.id
-            );
-
-            if (generoExistente) {
-                toast.error('Ya existe un género con este nombre');
-                return;
-            }
-
             if (generoSeleccionado) {
                 await api.put(`/generos/${generoSeleccionado.id}`, formData);
                 toast.success('Género actualizado exitosamente');
@@ -152,29 +138,21 @@ const Generos = () => {
             handleCloseModal();
             cargarGeneros();
         } catch (error) {
+            console.error('Error:', error);
             toast.error('Error al guardar el género');
         }
     };
 
     const handleDelete = async (id) => {
-        try {
-            // Verificar si el género está en uso
-            const response = await api.get(`/peliculas`);
-            const peliculas = response.data.$values || [];
-            const generoEnUso = peliculas.some(pelicula => pelicula.generoId === id);
-
-            if (generoEnUso) {
-                toast.error('No es permitido borrar este género porque está en uso en la aplicación');
-                return;
-            }
-
-            if (window.confirm('¿Estás seguro de que deseas eliminar este género?')) {
+        if (window.confirm('¿Estás seguro de que deseas eliminar este género?')) {
+            try {
                 await api.delete(`/generos/${id}`);
-                toast.success('Género eliminado exitosamente');
                 cargarGeneros();
+                toast.success('Género eliminado exitosamente');
+            } catch (error) {
+                console.error('Error:', error);
+                toast.error('Error al eliminar el género');
             }
-        } catch (error) {
-            toast.error('Error al eliminar el género');
         }
     };
 

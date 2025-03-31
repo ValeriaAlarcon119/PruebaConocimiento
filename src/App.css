@@ -523,26 +523,29 @@ input:not(:placeholder-shown), select:not([value=""]), textarea:not(:placeholder
 
 /* Estilos para los iconos en las tablas */
 .table .icon {
-    font-size: 1.2rem;
     cursor: pointer;
-    transition: color 0.3s ease;
+    font-size: 1.2rem;
     margin: 0 5px;
-}
-
-.table .fa-edit {
-    color: #003366; /* Azul oscuro para editar */
-}
-
-.table .fa-trash {
-    color: #dc3545; /* Rojo para eliminar */
-}
-
-.table .fa-eye {
-    color: #00bfff; /* Azul claro para ver más */
+    transition: transform 0.2s;
 }
 
 .table .icon:hover {
-    opacity: 0.8;
+    transform: scale(1.2);
+}
+
+/* Color para el icono de ver detalles */
+.table .icon.fa-eye {
+    color: #00bfff;
+}
+
+/* Color para el icono de editar */
+.table .icon.fa-edit {
+    color: #003366;
+}
+
+/* Color para el icono de eliminar */
+.table .icon.fa-trash {
+    color: #dc3545;
 }
 
 /* Estilos para los modales */

@@ -46,22 +46,19 @@ const Paises = () => {
     const cargarPaises = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:8080/api/paises', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            if (response.ok) {
-                const data = await response.json();
-                setPaises(data);
-            }
+            const response = await api.get('/paises');
+            setPaises(response.data.$values || []);
         } catch (error) {
-            console.error('Error al cargar países:', error);
-            toast.error('Error al cargar los países');
+            if (error.response && error.response.status === 401) {
+                toast.error('Sesión expirada. Por favor, inicie sesión nuevamente.');
+                navigate('/login');
+            } else {
+                toast.error('Error al cargar los países');
+            }
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [navigate]);
 
     const cargarPeliculas = async () => {
         try {
@@ -116,17 +113,6 @@ const Paises = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Verificar si ya existe un país con el mismo nombre
-            const paisExistente = paises.find(
-                p => p.nombre.toLowerCase() === formData.nombre.toLowerCase() &&
-                    p.id !== paisSeleccionado?.id
-            );
-
-            if (paisExistente) {
-                toast.error('Ya existe un país con este nombre');
-                return;
-            }
-
             if (paisSeleccionado) {
                 await api.put(`/paises/${paisSeleccionado.id}`, formData);
                 toast.success('País actualizado exitosamente');
@@ -137,27 +123,21 @@ const Paises = () => {
             handleCloseModal();
             cargarPaises();
         } catch (error) {
+            console.error('Error:', error);
             toast.error('Error al guardar el país');
         }
     };
 
     const handleDelete = async (id) => {
-        try {
-            // Verificar si el país está en uso en películas
-            const paisEnUso = peliculas.some(pelicula => pelicula.paisId === id);
-
-            if (paisEnUso) {
-                toast.error('No es permitido borrar este país porque está en uso en la aplicación');
-                return;
-            }
-
-            if (window.confirm('¿Estás seguro de que deseas eliminar este país?')) {
+        if (window.confirm('¿Estás seguro de que deseas eliminar este país?')) {
+            try {
                 await api.delete(`/paises/${id}`);
-                toast.success('País eliminado exitosamente');
                 cargarPaises();
+                toast.success('País eliminado exitosamente');
+            } catch (error) {
+                console.error('Error:', error);
+                toast.error('Error al eliminar el país');
             }
-        } catch (error) {
-            toast.error('Error al eliminar el país');
         }
     };
 
@@ -201,16 +181,19 @@ const Paises = () => {
                                             <td>{pais.nombre}</td>
                                             <td>
                                                 <FaEye 
-                                                    className="icon" 
+                                                    className="icon fa-eye" 
                                                     onClick={() => handleShowDetails(pais)}
+                                                    title="Ver detalles"
                                                 />
                                                 <FaEdit 
-                                                    className="icon" 
+                                                    className="icon fa-edit" 
                                                     onClick={() => handleShowModal(pais)}
+                                                    title="Editar"
                                                 />
                                                 <FaTrash 
-                                                    className="icon" 
+                                                    className="icon fa-trash" 
                                                     onClick={() => handleDelete(pais.id)}
+                                                    title="Eliminar"
                                                 />
                                             </td>
                                         </tr>

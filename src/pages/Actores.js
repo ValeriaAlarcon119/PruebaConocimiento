@@ -232,21 +232,21 @@ const Actores = () => {
                                             <td>{actor.nombre}</td>
                                             <td>{actor.apellido}</td>
                                             <td>
-                                                <Button 
-                                                    variant="outline-primary" 
-                                                    size="sm"
+                                                <FaEye 
+                                                    className="icon fa-eye" 
+                                                    onClick={() => handleShowDetails(actor)}
+                                                    title="Ver detalles"
+                                                />
+                                                <FaEdit 
+                                                    className="icon fa-edit" 
                                                     onClick={() => handleShowModal(actor)}
-                                                    className="me-2"
-                                                >
-                                                    <FaEdit />
-                                                </Button>
-                                                <Button 
-                                                    variant="outline-danger" 
-                                                    size="sm"
+                                                    title="Editar"
+                                                />
+                                                <FaTrash 
+                                                    className="icon fa-trash" 
                                                     onClick={() => handleDelete(actor.id)}
-                                                >
-                                                    <FaTrash />
-                                                </Button>
+                                                    title="Eliminar"
+                                                />
                                             </td>
                                         </tr>
                                     ))}
@@ -255,6 +255,45 @@ const Actores = () => {
                         </div>
                     )}
                 </div>
+
+                <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Detalles del Actor</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Nombre</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={actorSeleccionado?.nombre || ''}
+                                    disabled={true}
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Apellido</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={actorSeleccionado?.apellido || ''}
+                                    disabled={true}
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>País</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={actorSeleccionado?.pais?.nombre || ''}
+                                    disabled={true}
+                                />
+                            </Form.Group>
+                        </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={handleCloseDetailsModal}>
+                            Cerrar
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
 
                 <Modal show={showModal} onHide={handleCloseModal}>
                     <Modal.Header closeButton className="bg-primary text-white">
@@ -305,7 +344,7 @@ const Actores = () => {
                             </Form.Group>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button variant="secondary" onClick={handleCloseModal}>
+                            <Button variant="danger" onClick={handleCloseModal}>
                                 Cerrar
                             </Button>
                             <Button variant="primary" type="submit">
@@ -313,37 +352,6 @@ const Actores = () => {
                             </Button>
                         </Modal.Footer>
                     </Form>
-                </Modal>
-
-                <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Detalles del Actor</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Nombre</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    value={actorSeleccionado?.nombre || ''}
-                                    disabled={true}
-                                />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Apellido</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    value={actorSeleccionado?.apellido || ''}
-                                    disabled={true}
-                                />
-                            </Form.Group>
-                        </Form>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={handleCloseDetailsModal}>
-                            Cerrar
-                        </Button>
-                    </Modal.Footer>
                 </Modal>
             </div>
         </div>

@@ -50,28 +50,26 @@ const Directores = () => {
     const cargarDirectores = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:8080/api/directores', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            if (response.ok) {
-                const data = await response.json();
-                setDirectores(data);
-            }
+            const response = await api.get('/directores');
+            setDirectores(response.data.$values || []);
         } catch (error) {
-            console.error('Error al cargar directores:', error);
-            toast.error('Error al cargar los directores');
+            if (error.response && error.response.status === 401) {
+                toast.error('Sesión expirada. Por favor, inicie sesión nuevamente.');
+                navigate('/login');
+            } else {
+                toast.error('Error al cargar los directores');
+            }
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [navigate]);
 
     const cargarPaises = async () => {
         try {
             const response = await api.get('/paises');
             setPaises(response.data.$values || []);
         } catch (error) {
+            console.error('Error al cargar países:', error);
             toast.error('Error al cargar los países');
         }
     };
@@ -135,29 +133,27 @@ const Directores = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const url = directorSeleccionado
-                ? `http://localhost:8080/api/directores/${directorSeleccionado.id}`
-                : 'http://localhost:8080/api/directores';
-            
-            const method = directorSeleccionado ? 'PUT' : 'POST';
+            // Verificar si ya existe un director con el mismo nombre y apellido
+            const directorExistente = directores.find(
+                d => d.nombre.toLowerCase() === formData.nombre.toLowerCase() &&
+                    d.apellido.toLowerCase() === formData.apellido.toLowerCase() &&
+                    d.id !== directorSeleccionado?.id
+            );
 
-            const response = await fetch(url, {
-                method,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: JSON.stringify(formData)
-            });
-
-            if (response.ok) {
-                handleCloseModal();
-                cargarDirectores();
-                toast.success(directorSeleccionado ? 'Director actualizado exitosamente' : 'Director creado exitosamente');
-            } else {
-                const error = await response.json();
-                toast.error(error.message || 'Error al guardar el director');
+            if (directorExistente) {
+                toast.error('Ya existe un director con este nombre y apellido');
+                return;
             }
+
+            if (directorSeleccionado) {
+                await api.put(`/directores/${directorSeleccionado.id}`, formData);
+                toast.success('Director actualizado exitosamente');
+            } else {
+                await api.post('/directores', formData);
+                toast.success('Director creado exitosamente');
+            }
+            handleCloseModal();
+            cargarDirectores();
         } catch (error) {
             console.error('Error:', error);
             toast.error('Error al guardar el director');
@@ -165,26 +161,23 @@ const Directores = () => {
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm('¿Estás seguro de que deseas eliminar este director?')) {
-            try {
-                const response = await fetch(`http://localhost:8080/api/directores/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
+        try {
+            // Verificar si el director está en uso en películas
+            const directorEnUso = peliculas.some(pelicula => pelicula.directorId === id);
 
-                if (response.ok) {
-                    cargarDirectores();
-                    toast.success('Director eliminado exitosamente');
-                } else {
-                    const error = await response.json();
-                    toast.error(error.message || 'Error al eliminar el director');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                toast.error('Error al eliminar el director');
+            if (directorEnUso) {
+                toast.error('No es permitido borrar este director porque está en uso en la aplicación');
+                return;
             }
+
+            if (window.confirm('¿Estás seguro de que deseas eliminar este director?')) {
+                await api.delete(`/directores/${id}`);
+                cargarDirectores();
+                toast.success('Director eliminado exitosamente');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error('Error al eliminar el director');
         }
     };
 
@@ -232,16 +225,19 @@ const Directores = () => {
                                             <td>{director.pais.nombre}</td>
                                             <td>
                                                 <FaEye 
-                                                    className="icon" 
+                                                    className="icon fa-eye" 
                                                     onClick={() => handleShowDetails(director)}
+                                                    title="Ver detalles"
                                                 />
                                                 <FaEdit 
-                                                    className="icon" 
+                                                    className="icon fa-edit" 
                                                     onClick={() => handleShowModal(director)}
+                                                    title="Editar"
                                                 />
                                                 <FaTrash 
-                                                    className="icon" 
+                                                    className="icon fa-trash" 
                                                     onClick={() => handleDelete(director.id)}
+                                                    title="Eliminar"
                                                 />
                                             </td>
                                         </tr>
@@ -251,6 +247,45 @@ const Directores = () => {
                         </div>
                     )}
                 </div>
+
+                <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Detalles del Director</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Nombre</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={directorSeleccionado?.nombre || ''}
+                                    disabled={true}
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Apellido</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={directorSeleccionado?.apellido || ''}
+                                    disabled={true}
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>País</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={directorSeleccionado?.pais?.nombre || ''}
+                                    disabled={true}
+                                />
+                            </Form.Group>
+                        </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={handleCloseDetailsModal}>
+                            Cerrar
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
 
                 <Modal show={showModal} onHide={handleCloseModal}>
                     <Modal.Header closeButton className="bg-primary text-white">
@@ -309,45 +344,6 @@ const Directores = () => {
                             </Button>
                         </Modal.Footer>
                     </Form>
-                </Modal>
-
-                <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Detalles del Director</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Nombre</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    value={directorSeleccionado?.nombre || ''}
-                                    disabled={true}
-                                />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Apellido</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    value={directorSeleccionado?.apellido || ''}
-                                    disabled={true}
-                                />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>País</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    value={directorSeleccionado?.pais?.nombre || ''}
-                                    disabled={true}
-                                />
-                            </Form.Group>
-                        </Form>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="danger" onClick={handleCloseDetailsModal}>
-                            Cerrar
-                        </Button>
-                    </Modal.Footer>
                 </Modal>
             </div>
         </div>
