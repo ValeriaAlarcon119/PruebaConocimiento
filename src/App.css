@@ -36,3 +36,238 @@
     transform: rotate(360deg);
   }
 }
+
+.custom-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.table-wrapper {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.button-container {
+    position: absolute;
+    right: 0;
+    top: -40px;
+    z-index: 1;
+}
+
+.custom-table-responsive {
+    max-height: 300px;
+    overflow-y: auto;
+    border: none;
+    border-radius: 0.25rem;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 0;
+    background-color: white;
+}
+
+.table th {
+    background-color: #a2c2e0;
+    color: #333;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.text-primary {
+    color: #6c757d;
+}
+
+.new-director-button {
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    transition: background-color 0.3s;
+    padding: 6px 12px;
+    font-size: 14px;
+}
+
+.new-director-button:hover {
+    background-color: #0056b3;
+}
+
+/* Asegurarse de que la barra de desplazamiento esté pegada a la tabla */
+.custom-table-responsive::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-table-responsive::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.custom-table-responsive::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.custom-table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.table-responsive {
+    border: none;
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    background-color: #a2c2e0;
+    color: #333;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.modal-content {
+    border-radius: 15px;
+}
+
+.form-control, .form-select {
+    border-radius: 20px !important;
+}
+
+.card {
+    transition: transform 0.3s ease; /* Transición suave */
+}
+
+.card:hover {
+    transform: scale(1.05); /* Aumenta el tamaño al pasar el mouse */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Agrega sombra para un efecto más atractivo */
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra el contenido horizontalmente */
+}
+
+.modal-body img {
+    max-width: 100%; /* Asegura que la imagen no exceda el ancho del contenedor */
+    height: auto; /* Mantiene la proporción de la imagen */
+}
+
+.card-title {
+    text-align: center; /* Centra el texto del título en las tarjetas */
+}
+
+.modal-title {
+    text-align: center; /* Centra el texto del título en el modal */
+}
+
+.navbar {
+    background-color: #003366; /* Color azul oscuro */
+    padding: 15px; /* Espaciado alrededor del menú */
+}
+
+.navbar-brand, .nav-link {
+    color: #ffffff; /* Color del texto en blanco */
+}
+
+.navbar-brand:hover, .nav-link:hover {
+    color: #ffcc00; /* Color del texto al pasar el mouse */
+}
+
+.navbar-collapse {
+    text-align: center; /* Centra el contenido del menú */
+}
+
+.navbar-toggler {
+    background-color: #ffcc00; /* Color del botón de hamburguesa */
+}
+
+.welcome-title {
+    font-family: 'Pacifico', cursive; /* Cambia a la fuente de Google para el título */
+    color: #003366; /* Color azul oscuro pastel */
+    font-size: 2.5rem; /* Tamaño de fuente más grande */
+    text-align: center; /* Asegúrate de que esté centrado */
+    position: relative;
+    display: block; /* Cambia a block para asegurar que ocupe todo el ancho */
+    margin: 0 auto; /* Asegura que el margen sea automático para centrar */
+    text-shadow: 
+        2px 2px 0 rgba(0, 0, 0, 0.3), 
+        4px 4px 0 rgba(0, 0, 0, 0.2), 
+        6px 6px 0 rgba(0, 0, 0, 0.1); /* Sombra más pronunciada para el efecto 3D */
+}
+
+.welcome-description {
+    font-family: 'Roboto', sans-serif; /* Mantiene la fuente Roboto para la descripción */
+    font-size: 1.2rem; /* Tamaño de fuente para la descripción */
+    color: #555; /* Color más suave para la descripción */
+}
+
+.icon {
+    transition: color 0.3s; /* Transición suave para el cambio de color */
+}
+
+.icon:hover {
+    color: #ff6347; /* Cambia el color al pasar el mouse */
+}
+
+footer {
+    margin-top: 20px;
+    color: #777; /* Color del pie de página */
+}
+
+.navbar-bottom {
+    position: fixed; /* Fija la barra en la parte inferior */
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 0; /* Espaciado vertical */
+    z-index: 1000; /* Asegúrate de que esté por encima de otros elementos */
+}
+
+.navbar-bottom .nav-link {
+    margin: 0 10px; /* Espaciado entre los íconos */
+}
+
+.modal-fullscreen {
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.modal-body-scroll {
+    max-height: calc(100vh - 200px); /* Ajusta la altura máxima del cuerpo del modal */
+    overflow-y: auto; /* Agrega una barra de desplazamiento vertical */
+}
+
+.modal-body-scroll div {
+    text-align: left; /* Asegúrate de que el texto no esté centrado */
+    margin: 10px 0; /* Espaciado entre las líneas */
+}
+
+input, select, textarea {
+    background-color: #f8f9fa; /* Fondo gris claro */
+    border: 2px solid #28a745; /* Color verde */
+    transition: border-color 0.3s; /* Transición suave para el cambio de color */
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #218838; /* Color verde más oscuro al enfocar */
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.5); /* Sombra al enfocar */
+}
+
+input:not(:placeholder-shown), select:not([value=""]), textarea:not(:placeholder-shown) {
+    border-color: #28a745; /* Mantiene el borde verde cuando se llena */
+}

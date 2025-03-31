@@ -11,3 +11,31 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.btn-outline-primary:hover, .btn-outline-danger:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s;
+}
+
+.table thead th {
+  font-weight: 600;
+}
+
+.modal-header {
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.modal-footer {
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.shadow-sm {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+.gap-2 {
+  gap: 0.5rem !important;
+}
+
+.p-2 {
+  padding: 0.5rem !important;
+}
