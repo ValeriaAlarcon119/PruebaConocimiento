@@ -27,7 +27,7 @@ const Directores = () => {
             const token = localStorage.getItem('token');
             if (!token) {
                 toast.error('Por favor, inicie sesión para continuar.');
-                navigate('/login'); // Redirige al login si no está autenticado
+                navigate('/login'); 
             } else {
                 setIsAuthenticated(true);
             }
@@ -37,7 +37,7 @@ const Directores = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (!isAuthenticated) return; // No continuar si no está autenticado
+            if (!isAuthenticated) return; 
             setLoading(true);
             await cargarDirectores();
             await cargarPaises();
@@ -51,7 +51,14 @@ const Directores = () => {
         setLoading(true);
         try {
             const response = await api.get('/directores');
-            setDirectores(response.data.$values || []);
+            const directoresConPaises = await Promise.all(response.data.$values.map(async (director) => {
+                const paisResponse = await api.get(`/paises/${director.paisId}`);
+                return {
+                    ...director,
+                    pais: paisResponse.data 
+                };
+            }));
+            setDirectores(directoresConPaises);
         } catch (error) {
             if (error.response && error.response.status === 401) {
                 toast.error('Sesión expirada. Por favor, inicie sesión nuevamente.');
@@ -88,7 +95,7 @@ const Directores = () => {
             setFormData({
                 nombre: director.nombre,
                 apellido: director.apellido,
-                paisId: director.pais.id
+                paisId: director.pais?.id || ''
             });
             setDirectorSeleccionado(director);
         } else {
@@ -133,7 +140,6 @@ const Directores = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Verificar si ya existe un director con el mismo nombre y apellido
             const directorExistente = directores.find(
                 d => d.nombre.toLowerCase() === formData.nombre.toLowerCase() &&
                     d.apellido.toLowerCase() === formData.apellido.toLowerCase() &&
@@ -145,11 +151,18 @@ const Directores = () => {
                 return;
             }
 
+            const directorData = {
+                id: directorSeleccionado ? directorSeleccionado.id : 0,
+                nombre: formData.nombre,
+                apellido: formData.apellido,
+                paisId: parseInt(formData.paisId)
+            };
+
             if (directorSeleccionado) {
-                await api.put(`/directores/${directorSeleccionado.id}`, formData);
+                await api.put(`/directores/${directorSeleccionado.id}`, directorData);
                 toast.success('Director actualizado exitosamente');
             } else {
-                await api.post('/directores', formData);
+                await api.post('/directores', directorData);
                 toast.success('Director creado exitosamente');
             }
             handleCloseModal();
@@ -162,7 +175,6 @@ const Directores = () => {
 
     const handleDelete = async (id) => {
         try {
-            // Verificar si el director está en uso en películas
             const directorEnUso = peliculas.some(pelicula => pelicula.directorId === id);
 
             if (directorEnUso) {
@@ -188,16 +200,6 @@ const Directores = () => {
                 <p className="text-center text-white mb-4">
                     Aquí encuentras información sobre los directores y puedes gestionar esta información
                 </p>
-                <div className="d-flex justify-content-end mb-4">
-                    <Button 
-                        variant="primary" 
-                        onClick={() => handleShowModal()}
-                        className="d-flex align-items-center gap-2 new-director-button"
-                    >
-                        <FaPlus /> Nuevo Director
-                    </Button>
-                </div>
-                
                 <div className="table-wrapper">
                     {loading ? (
                         <div className="text-center">
@@ -208,13 +210,18 @@ const Directores = () => {
                         </div>
                     ) : (
                         <div className="table-responsive">
-                            <Table striped bordered hover>
+                            <div className="d-flex justify-content-end mb-2">
+                                <Button variant="primary" onClick={() => handleShowModal()} className="d-flex align-items-center gap-2 new-director-button">
+                                    <FaPlus /> Agregar
+                                </Button>
+                            </div>
+                            <Table striped bordered hover style={{ width: '70%', margin: '0 auto' }}>
                                 <thead>
                                     <tr>
-                                        <th>Nombre</th>
-                                        <th>Apellido</th>
-                                        <th>País</th>
-                                        <th>Acciones</th>
+                                        <th style={{ width: '25%' }}>Nombre</th>
+                                        <th style={{ width: '25%' }}>Apellido</th>
+                                        <th style={{ width: '25%' }}>País</th>
+                                        <th style={{ width: '25%' }}>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -222,23 +229,11 @@ const Directores = () => {
                                         <tr key={director.id}>
                                             <td>{director.nombre}</td>
                                             <td>{director.apellido}</td>
-                                            <td>{director.pais.nombre}</td>
+                                            <td>{director.pais.nombre || 'No especificado'}</td>
                                             <td>
-                                                <FaEye 
-                                                    className="icon fa-eye" 
-                                                    onClick={() => handleShowDetails(director)}
-                                                    title="Ver detalles"
-                                                />
-                                                <FaEdit 
-                                                    className="icon fa-edit" 
-                                                    onClick={() => handleShowModal(director)}
-                                                    title="Editar"
-                                                />
-                                                <FaTrash 
-                                                    className="icon fa-trash" 
-                                                    onClick={() => handleDelete(director.id)}
-                                                    title="Eliminar"
-                                                />
+                                                <FaEye className="icon fa-eye" onClick={() => handleShowDetails(director)} title="Ver detalles" />
+                                                <FaEdit className="icon fa-edit" onClick={() => handleShowModal(director)} title="Editar" />
+                                                <FaTrash className="icon fa-trash" onClick={() => handleDelete(director.id)} title="Eliminar" />
                                             </td>
                                         </tr>
                                     ))}
@@ -250,7 +245,7 @@ const Directores = () => {
 
                 <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Detalles del Director</Modal.Title>
+                        <Modal.Title className="text-center w-100">Detalles del Director</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form>
@@ -280,7 +275,7 @@ const Directores = () => {
                             </Form.Group>
                         </Form>
                     </Modal.Body>
-                    <Modal.Footer>
+                    <Modal.Footer className="d-flex justify-content-center">
                         <Button variant="danger" onClick={handleCloseDetailsModal}>
                             Cerrar
                         </Button>
@@ -289,7 +284,7 @@ const Directores = () => {
 
                 <Modal show={showModal} onHide={handleCloseModal}>
                     <Modal.Header closeButton className="bg-primary text-white">
-                        <Modal.Title>
+                        <Modal.Title className="text-center w-100">
                             {directorSeleccionado ? 'Editar Director' : 'Nuevo Director'}
                         </Modal.Title>
                     </Modal.Header>
@@ -335,7 +330,7 @@ const Directores = () => {
                                 </Form.Select>
                             </Form.Group>
                         </Modal.Body>
-                        <Modal.Footer>
+                        <Modal.Footer className="d-flex justify-content-center">
                             <Button variant="danger" onClick={handleCloseModal}>
                                 Cerrar
                             </Button>

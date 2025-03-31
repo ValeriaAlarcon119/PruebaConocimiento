@@ -250,9 +250,16 @@ const Peliculas = () => {
 
     return (
         <div className="custom-container">
-            <h2 className="text-center mb-4" style={{ color: '#6c757d' }}>
+            <h2 
+                className="text-center mb-4" 
+                style={{ 
+                    color: 'black', 
+                    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' 
+                }}
+            >
                 Gestión de Películas
             </h2>
+
             <div className="d-flex justify-content-end mb-4">
                 <Button 
                     variant="primary" 
@@ -267,11 +274,12 @@ const Peliculas = () => {
                 <div className="row" style={{ marginTop: '30px' }}>
                     {loading ? (
                         <div className="col-12 text-center">
-                            <Spinner animation="border" role="status">
+                            <Spinner animation="border" role="status" className="spinner-black">
                                 <span className="visually-hidden">Cargando...</span>
                             </Spinner>
-                            <p>Cargando...</p>
+                            <p className="cargando-texto">Cargando...</p>
                         </div>
+                    
                     ) : (
                         peliculas.length > 0 ? (
                             peliculas.map((pelicula) => (
@@ -306,11 +314,11 @@ const Peliculas = () => {
                                                     <FaEye /> Ver más
                                                 </Button>
                                                 <FaEdit 
-                                                    className="icon" 
+                                                    className=".icon:hover " 
                                                     onClick={() => handleShowModal(pelicula)}
                                                 />
                                                 <FaTrash 
-                                                    className="icon" 
+                                                    className="icon fa-trash" 
                                                     onClick={() => handleDelete(pelicula.id)}
                                                 />
                                             </div>
@@ -330,32 +338,43 @@ const Peliculas = () => {
                     <Modal.Title className="text-center w-100">{peliculaSeleccionada?.titulo}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="modal-body-scroll">
-                    <div className="text-center">
-                        <img 
-                            src={peliculaSeleccionada?.portadaUrl || `${process.env.PUBLIC_URL}/images/portada1.jpg`}
-                            alt="Portada" 
-                            className="img-fluid mb-3" 
-                            style={{ maxWidth: '100%', height: 'auto' }}
-                        />
-                    </div>
+                <div className="text-center">
+                    <img 
+                        src={peliculaSeleccionada?.portadaUrl || `${process.env.PUBLIC_URL}/images/portada1.jpg`}
+                        alt="Portada" 
+                        className="img-fluid mb-3" 
+                        style={{ 
+                            width: '200px',       
+                            height: '300px',      
+                            objectFit: 'cover',  
+                            borderRadius: '8px'   
+                        }}
+                    />
+                </div>
+
                     <div>
-                        <span>Reseña: {peliculaSeleccionada?.reseña}</span><br />
+                        <span>Reseña: <em>{peliculaSeleccionada?.reseña}</em></span><br />
+
                         <span>Director: {peliculaSeleccionada?.directorNombre}</span><br />
                         <span>Género: {peliculaSeleccionada?.generoNombre}</span><br />
                         <span>País: {peliculaSeleccionada?.paisNombre}</span><br />
-                        <span>Actores:</span>
+                        <span>Actores: </span>
                         {peliculaSeleccionada?.actores?.$values?.map((actor, index) => (
-                            <div 
-                                key={actor.id} 
-                                style={{ 
-                                    backgroundColor: index % 2 === 0 ? '#f8f9fa' : '#ffffff', // Alterna entre gris claro y blanco
-                                    padding: '5px', // Espaciado para que se vea mejor
-                                    borderRadius: '5px' // Bordes redondeados
-                                }}
-                            >
-                                {actor.nombre} {actor.apellido}
-                            </div>
+                        <span 
+                            key={actor.id} 
+                            style={{ 
+                            backgroundColor: index % 2 === 0 ? '#f8f9fa' : '#ffffff', 
+                            padding: '5px', 
+                            borderRadius: '5px', 
+                            display: 'inline-block', 
+                            marginRight: '5px'
+                            }}
+                        >
+                            {actor.nombre} {actor.apellido}
+                            {index < peliculaSeleccionada.actores.$values.length - 1 && ','}
+                        </span>
                         ))}
+
                     </div>
                     <h5>Tráiler</h5>
                     {peliculaSeleccionada?.trailerYoutube && (
@@ -371,7 +390,7 @@ const Peliculas = () => {
                         </div>
                     )}
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer className="d-flex justify-content-center">
                     <Button variant="primary" onClick={handleCloseDetailsModal}>
                         Cerrar
                     </Button>

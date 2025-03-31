@@ -108,7 +108,6 @@
     background-color: #0056b3;
 }
 
-/* Asegurarse de que la barra de desplazamiento esté pegada a la tabla */
 .custom-table-responsive::-webkit-scrollbar {
     width: 8px;
 }
@@ -161,36 +160,44 @@
     background-color: #fff;
     color: #333;
 }
+.spinner-black {
+    color: black;
+}
+
+.cargando-texto {
+    color: black;
+    font-weight: bold;
+}
 
 .card {
-    background-color: #003366; /* Mismo color del navbar */
-    color: #f5f5f5; /* Color blanco hueso */
+    background-color: #003366; 
+    color: #f5f5f5; 
     transition: all 0.3s ease;
     height: 100%;
 }
 
 .card:hover {
-    background-color: #004080; /* Un tono más claro al hacer hover */
+    background-color: #004080;
     transform: translateY(-2px);
 }
 
 .modal-body {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centra el contenido horizontalmente */
+    align-items: center; 
 }
 
 .modal-body img {
-    max-width: 100%; /* Asegura que la imagen no exceda el ancho del contenedor */
-    height: auto; /* Mantiene la proporción de la imagen */
+    max-width: 100%;
+    height: auto; 
 }
 
 .card-title {
-    text-align: center; /* Centra el texto del título en las tarjetas */
+    text-align: center; 
 }
 
 .modal-title {
-    text-align: center; /* Centra el texto del título en el modal */
+    text-align: center; 
 }
 
 .navbar {
@@ -203,20 +210,20 @@
 }
 
 .navbar-brand:hover, .nav-link:hover {
-    color: #00bfff !important; /* Azul claro al hacer hover */
+    color: #00bfff !important; 
 }
 
 .navbar-collapse {
-    text-align: center; /* Centra el contenido del menú */
+    text-align: center; 
 }
 
 .navbar-toggler {
-    background-color: #00bfff; /* Color del botón de hamburguesa */
+    background-color: #00bfff; 
 }
 
 .welcome-title {
     font-family: 'Pacifico', cursive;
-    color: #003366; /* Azul oscuro para el título */
+    color: #003366;
     font-size: 2.5rem;
     text-align: center;
     position: relative;
@@ -229,9 +236,9 @@
 }
 
 .welcome-description {
-    font-family: 'Roboto', sans-serif; /* Mantiene la fuente Roboto para la descripción */
-    font-size: 1.2rem; /* Tamaño de fuente para la descripción */
-    color: #f5f5f5; /* Actualiza el color de la descripción */
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.2rem; 
+    color: #f5f5f5; 
 }
 
 .icon {
@@ -259,12 +266,12 @@
 }
 
 .card:hover .icon {
-    color: #00bfff; /* Color azul claro al hacer hover */
+    color: #00bfff; 
 }
 
 footer {
     margin-top: 20px;
-    color: #777; /* Color del pie de página */
+    color: #777; 
 }
 
 .navbar-bottom {
@@ -278,7 +285,7 @@ footer {
 }
 
 .navbar-bottom .nav-link {
-    margin: 0 10px; /* Espaciado entre los íconos */
+    margin: 0 10px; 
 }
 
 .modal-fullscreen {
@@ -290,33 +297,32 @@ footer {
 }
 
 .modal-body-scroll {
-    max-height: calc(100vh - 200px); /* Ajusta la altura máxima del cuerpo del modal */
-    overflow-y: auto; /* Agrega una barra de desplazamiento vertical */
+    max-height: calc(100vh - 200px);
+    overflow-y: auto; 
 }
 
 .modal-body-scroll div {
-    text-align: left; /* Asegúrate de que el texto no esté centrado */
-    margin: 10px 0; /* Espaciado entre las líneas */
+    text-align: left;
+    margin: 10px 0;
 }
 
 input, select, textarea {
-    background-color: #f8f9fa; /* Fondo gris claro */
-    border: 2px solid #28a745; /* Color verde */
-    transition: border-color 0.3s; /* Transición suave para el cambio de color */
+    background-color: #f8f9fa; 
+    border: 2px solid #28a745; 
+    transition: border-color 0.3s; 
 }
 
 input:focus, select:focus, textarea:focus {
-    border-color: #218838; /* Color verde más oscuro al enfocar */
-    box-shadow: 0 0 5px rgba(40, 167, 69, 0.5); /* Sombra al enfocar */
+    border-color: #218838; 
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.5); 
 }
 
 input:not(:placeholder-shown), select:not([value=""]), textarea:not(:placeholder-shown) {
-    border-color: #28a745; /* Mantiene el borde verde cuando se llena */
+    border-color: #28a745; 
 }
 
-/* Estilos para el componente de contacto */
 .contact-card {
-    background-color: #000000 !important; /* Negro puro */
+    background-color: #000000 !important; 
     color: #ffffff !important;
     transition: all 0.3s ease;
     border: none;
@@ -336,7 +342,6 @@ input:not(:placeholder-shown), select:not([value=""]), textarea:not(:placeholder
     color: #00bfff;
 }
 
-/* Estilos específicos para las tarjetas de películas */
 .movie-card {
     background-color: #000000 !important;
     color: #ffffff !important;
@@ -396,15 +401,15 @@ input:not(:placeholder-shown), select:not([value=""]), textarea:not(:placeholder
 }
 
 .movie-card .button-group .fa-edit {
-    color: #003366; /* Azul oscuro para editar */
+    color: #003366; 
 }
 
 .movie-card .button-group .fa-trash {
-    color: #dc3545; /* Rojo para eliminar */
+    color: #dc3545; 
 }
 
 .movie-card .button-group .fa-eye {
-    color: #00bfff; /* Azul claro para ver más */
+    color: #00bfff; 
 }
 
 .movie-card .button-group .icon:hover {
@@ -430,7 +435,7 @@ input:not(:placeholder-shown), select:not([value=""]), textarea:not(:placeholder
 
 @media (max-width: 768px) {
     .movie-card {
-        min-height: 600px; /* Altura mínima para móviles */
+        min-height: 600px; 
     }
     
     .movie-card .button-group {
@@ -440,7 +445,6 @@ input:not(:placeholder-shown), select:not([value=""]), textarea:not(:placeholder
     }
 }
 
-/* Ajustes para el modal de detalles de película */
 .modal-content {
     background-color: #003366;
     color: #f5f5f5;
@@ -456,14 +460,11 @@ input:not(:placeholder-shown), select:not([value=""]), textarea:not(:placeholder
     border-color: #004080;
 }
 
-/* Estilos para el fondo de las páginas */
 .page-background {
-    background-color: #1a1a1a; /* Negro más claro */
+    background-color: #1a1a1a; 
     min-height: 100vh;
     padding: 20px 0;
 }
-
-/* Estilos para las tarjetas en Welcome y Contacto */
 .welcome-card {
     background-color: #000000 !important;
     color: #ffffff !important;
@@ -500,7 +501,6 @@ input:not(:placeholder-shown), select:not([value=""]), textarea:not(:placeholder
     margin-bottom: 2rem;
 }
 
-/* Estilos para los títulos de las páginas */
 .page-title {
     color: #ffffff;
     text-align: center;
@@ -511,7 +511,6 @@ input:not(:placeholder-shown), select:not([value=""]), textarea:not(:placeholder
         6px 6px 0 rgba(0, 0, 0, 0.1);
 }
 
-/* Estilos para las tablas */
 .table {
     text-align: center;
 }
@@ -521,34 +520,29 @@ input:not(:placeholder-shown), select:not([value=""]), textarea:not(:placeholder
     text-align: center;
 }
 
-/* Estilos para los iconos en las tablas */
-.table .icon {
+.table td .icon {
     cursor: pointer;
     font-size: 1.2rem;
     margin: 0 5px;
     transition: transform 0.2s;
 }
 
-.table .icon:hover {
+.table td .icon:hover {
     transform: scale(1.2);
 }
 
-/* Color para el icono de ver detalles */
-.table .icon.fa-eye {
-    color: #00bfff;
+.table td .fa-eye {
+    color: #00bfff !important;
 }
 
-/* Color para el icono de editar */
-.table .icon.fa-edit {
-    color: #003366;
+.table td .fa-edit {
+    color: #003366 !important;
 }
 
-/* Color para el icono de eliminar */
-.table .icon.fa-trash {
-    color: #dc3545;
+.table td .fa-trash {
+    color: #dc3545 !important;
 }
 
-/* Estilos para los modales */
 .modal-footer {
     justify-content: center;
 }
@@ -563,12 +557,10 @@ input:not(:placeholder-shown), select:not([value=""]), textarea:not(:placeholder
     border-color: #bd2130;
 }
 
-/* Ajustes para los mensajes de carga */
 .loading-message {
     color: #f5f5f5;
 }
 
-/* Ajustes para los botones en las tablas */
 .table .btn {
     margin: 0 2px;
     color: #ffffff;
@@ -578,8 +570,19 @@ input:not(:placeholder-shown), select:not([value=""]), textarea:not(:placeholder
     color: #00bfff;
 }
 
-/* Mantener el login sin cambios */
 .login-container {
     background-color: #ffffff;
     color: #000000;
+}
+
+.table thead th {
+    background-color: #b3d9ff !important;
+    color: #000 !important;
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+    border-bottom: 2px solid #dee2e6 !important;
+}
+
+.table thead tr {
+    background-color: #b3d9ff !important;
 }

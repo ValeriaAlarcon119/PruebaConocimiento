@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { FaUser, FaFilm, FaGlobe, FaPhone } from 'react-icons/fa'; // Importa los íconos
+import { FaUserCircle, FaFilm, FaGlobe, FaPhone, FaUsers } from 'react-icons/fa'; 
 
 const Welcome = () => {
     return (
@@ -11,28 +11,29 @@ const Welcome = () => {
                 Tu plataforma para gestionar películas y series
             </p>
             <Row className="justify-content-center">
-                <Col lg={4} md={6} className="mb-4">
-                    <Card as={Link} to="/directores" className="h-100 text-decoration-none welcome-card">
-                        <Card.Body className="d-flex flex-column align-items-center">
-                            <FaUser size={50} className="icon" /> {/* Icono de personas para Directores */}
-                            <Card.Title>Directores</Card.Title>
-                            <Card.Text>Gestiona la información de los directores de las películas.</Card.Text>
-                        </Card.Body>
-                    </Card>
-                </Col>
+              
                 <Col lg={4} md={6} className="mb-4">
                     <Card as={Link} to="/generos" className="h-100 text-decoration-none welcome-card">
                         <Card.Body className="d-flex flex-column align-items-center">
-                            <FaFilm size={50} className="icon" /> {/* Icono de claqueta para Géneros */}
+                            <FaFilm size={50} className="icon" /> 
                             <Card.Title>Géneros</Card.Title>
                             <Card.Text>Administra los diferentes géneros de películas.</Card.Text>
                         </Card.Body>
                     </Card>
                 </Col>
                 <Col lg={4} md={6} className="mb-4">
+                    <Card as={Link} to="/directores" className="h-100 text-decoration-none welcome-card">
+                        <Card.Body className="d-flex flex-column align-items-center">
+                            <FaUsers size={50} className="icon" /> 
+                            <Card.Title>Directores</Card.Title>
+                            <Card.Text>Gestiona la información de los directores de las películas.</Card.Text>
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col lg={4} md={6} className="mb-4">
                     <Card as={Link} to="/paises" className="h-100 text-decoration-none welcome-card">
                         <Card.Body className="d-flex flex-column align-items-center">
-                            <FaGlobe size={50} className="icon" /> {/* Icono de globo terráqueo para Países */}
+                            <FaGlobe size={50} className="icon" />
                             <Card.Title>Países</Card.Title>
                             <Card.Text>Gestiona los países de origen de las películas.</Card.Text>
                         </Card.Body>
@@ -41,7 +42,7 @@ const Welcome = () => {
                 <Col lg={4} md={6} className="mb-4">
                     <Card as={Link} to="/actores" className="h-100 text-decoration-none welcome-card">
                         <Card.Body className="d-flex flex-column align-items-center">
-                            <FaUser size={50} className="icon" /> {/* Icono de personas para Actores */}
+                            <FaUserCircle size={50} className="icon" />
                             <Card.Title>Actores</Card.Title>
                             <Card.Text>Administra la información de los actores de las películas.</Card.Text>
                         </Card.Body>
@@ -50,7 +51,7 @@ const Welcome = () => {
                 <Col lg={4} md={6} className="mb-4">
                     <Card as={Link} to="/peliculas" className="h-100 text-decoration-none welcome-card">
                         <Card.Body className="d-flex flex-column align-items-center">
-                            <FaFilm size={50} className="icon" /> {/* Icono de películas */}
+                            <FaFilm size={50} className="icon" /> 
                             <Card.Title>Películas</Card.Title>
                             <Card.Text>Gestiona el catálogo completo de películas.</Card.Text>
                         </Card.Body>
@@ -59,7 +60,7 @@ const Welcome = () => {
                 <Col lg={4} md={6} className="mb-4">
                     <Card as={Link} to="/contacto" className="h-100 text-decoration-none welcome-card">
                         <Card.Body className="d-flex flex-column align-items-center">
-                            <FaPhone size={50} className="icon" /> {/* Icono de teléfono para Contacto */}
+                            <FaPhone size={50} className="icon" />
                             <Card.Title>Contáctanos</Card.Title>
                             <Card.Text>Si tienes preguntas, no dudes en contactarnos.</Card.Text>
                         </Card.Body>

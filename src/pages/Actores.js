@@ -50,7 +50,14 @@ const Actores = () => {
     const cargarActores = async () => {
         try {
             const response = await api.get('/actores');
-            setActores(response.data.$values || []);
+            const actoresConPaises = await Promise.all(response.data.$values.map(async (actor) => {
+                const paisResponse = await api.get(`/paises/${actor.paisId}`);
+                return {
+                    ...actor,
+                    pais: paisResponse.data
+                };
+            }));
+            setActores(actoresConPaises);
         } catch (error) {
             if (error.response && error.response.status === 401) {
                 toast.error('Sesión expirada. Por favor, inicie sesión nuevamente.');
@@ -124,7 +131,6 @@ const Actores = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Verificar si ya existe un actor con el mismo nombre y apellido
             const actorExistente = actores.find(
                 a => a.nombre.toLowerCase() === formData.nombre.toLowerCase() &&
                     a.apellido.toLowerCase() === formData.apellido.toLowerCase() &&
@@ -164,7 +170,6 @@ const Actores = () => {
 
     const handleDelete = async (id) => {
         try {
-            // Verificar si el actor está en uso en películas
             const actorEnUso = peliculas.some(pelicula => 
                 pelicula.actores?.$values?.some(actor => actor.id === id)
             );
@@ -198,17 +203,15 @@ const Actores = () => {
         <div className="page-background">
             <div className="custom-container">
                 <h2 className="page-title">Gestión de Actores</h2>
-                <div className="d-flex justify-content-end mb-4">
-                    <Button 
-                        variant="primary" 
-                        onClick={() => handleShowModal()}
-                        className="d-flex align-items-center gap-2 new-director-button"
-                    >
-                        <FaPlus /> Nuevo Actor
+                <p className="text-center text-white mb-4">
+                    Aquí encuentras información sobre los actores  y puedes gestionar esta información
+                </p>
+                <div className="table-wrapper">
+                <div className="d-flex justify-content-end mb-4" style={{ marginTop: '-20px' }}>
+                    <Button variant="primary" onClick={() => handleShowModal()} className="d-flex align-items-center gap-2 new-actor-button">
+                        <FaPlus /> Agregar
                     </Button>
                 </div>
-                
-                <div className="table-wrapper">
                     {loading ? (
                         <div className="text-center">
                             <Spinner animation="border" role="status">
@@ -218,12 +221,13 @@ const Actores = () => {
                         </div>
                     ) : (
                         <div className="table-responsive">
-                            <Table striped bordered hover>
+                            <Table striped bordered hover style={{ width: '70%', margin: '0 auto' }}>
                                 <thead>
                                     <tr>
-                                        <th>Nombre</th>
-                                        <th>Apellido</th>
-                                        <th>Acciones</th>
+                                        <th style={{ width: '25%' }}>Nombre</th>
+                                        <th style={{ width: '25%' }}>Apellido</th>
+                                        <th style={{ width: '25%' }}>País</th>
+                                        <th style={{ width: '25%' }}>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -231,22 +235,11 @@ const Actores = () => {
                                         <tr key={actor.id}>
                                             <td>{actor.nombre}</td>
                                             <td>{actor.apellido}</td>
+                                            <td>{actor.pais.nombre || 'No especificado'}</td>
                                             <td>
-                                                <FaEye 
-                                                    className="icon fa-eye" 
-                                                    onClick={() => handleShowDetails(actor)}
-                                                    title="Ver detalles"
-                                                />
-                                                <FaEdit 
-                                                    className="icon fa-edit" 
-                                                    onClick={() => handleShowModal(actor)}
-                                                    title="Editar"
-                                                />
-                                                <FaTrash 
-                                                    className="icon fa-trash" 
-                                                    onClick={() => handleDelete(actor.id)}
-                                                    title="Eliminar"
-                                                />
+                                                <FaEye className="icon fa-eye" onClick={() => handleShowDetails(actor)} title="Ver detalles" />
+                                                <FaEdit className="icon fa-edit" onClick={() => handleShowModal(actor)} title="Editar" />
+                                                <FaTrash className="icon fa-trash" onClick={() => handleDelete(actor.id)} title="Eliminar" />
                                             </td>
                                         </tr>
                                     ))}
@@ -255,10 +248,11 @@ const Actores = () => {
                         </div>
                     )}
                 </div>
-
+              
+                
                 <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Detalles del Actor</Modal.Title>
+                     <Modal.Header closeButton className="justify-content-center">
+                         <Modal.Title className="text-center w-100">Detalles del Actor</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form>
@@ -288,16 +282,16 @@ const Actores = () => {
                             </Form.Group>
                         </Form>
                     </Modal.Body>
-                    <Modal.Footer>
+                    <Modal.Footer className="d-flex justify-content-center">
                         <Button variant="danger" onClick={handleCloseDetailsModal}>
                             Cerrar
                         </Button>
                     </Modal.Footer>
                 </Modal>
 
-                <Modal show={showModal} onHide={handleCloseModal}>
-                    <Modal.Header closeButton className="bg-primary text-white">
-                        <Modal.Title>
+                <Modal show={showModal} onHide={handleCloseModal} centered>
+                    <Modal.Header closeButton className="bg-primary text-white justify-content-center">
+                        <Modal.Title className="text-center w-100">
                             {actorSeleccionado ? 'Editar Actor' : 'Nuevo Actor'}
                         </Modal.Title>
                     </Modal.Header>
@@ -343,7 +337,7 @@ const Actores = () => {
                                 </Form.Select>
                             </Form.Group>
                         </Modal.Body>
-                        <Modal.Footer>
+                        <Modal.Footer className="d-flex justify-content-center">
                             <Button variant="danger" onClick={handleCloseModal}>
                                 Cerrar
                             </Button>

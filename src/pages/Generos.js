@@ -25,7 +25,7 @@ const Generos = () => {
             const token = localStorage.getItem('token');
             if (!token) {
                 toast.error('Por favor, inicie sesión para continuar.');
-                navigate('/login'); // Redirige al login si no está autenticado
+                navigate('/login'); 
             } else {
                 setIsAuthenticated(true);
             }
@@ -35,7 +35,7 @@ const Generos = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (!isAuthenticated) return; // No continuar si no está autenticado
+            if (!isAuthenticated) return;
             setLoading(true);
             await cargarGeneros();
             setLoading(false);
@@ -51,7 +51,7 @@ const Generos = () => {
             } catch (error) {
                 if (error.response && error.response.status === 401) {
                     toast.error('Sesión expirada. Por favor, inicie sesión nuevamente.');
-                    navigate('/login'); // Redirige al login si la sesión ha expirado
+                    navigate('/login');
                 } else {
                     toast.error('Error al cargar las películas');
                 }
@@ -85,14 +85,12 @@ const Generos = () => {
         if (genero) {
             setGeneroSeleccionado(genero);
             setFormData({
-                nombre: genero.nombre,
-                descripcion: genero.descripcion
+                nombre: genero.nombre
             });
         } else {
             setGeneroSeleccionado(null);
             setFormData({
-                nombre: '',
-                descripcion: ''
+                nombre: ''
             });
         }
         setShowModal(true);
@@ -102,8 +100,7 @@ const Generos = () => {
         setShowModal(false);
         setGeneroSeleccionado(null);
         setFormData({
-            nombre: '',
-            descripcion: ''
+            nombre: ''
         });
     };
 
@@ -128,31 +125,57 @@ const Generos = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            const generoExistente = generos.find(
+                g => g.nombre.toLowerCase() === formData.nombre.toLowerCase() &&
+                    g.id !== generoSeleccionado?.id
+            );
+
+            if (generoExistente) {
+                toast.error('Ya existe un género con este nombre');
+                return;
+            }
+
+            const generoData = {
+                id: generoSeleccionado ? generoSeleccionado.id : 0,
+                nombre: formData.nombre
+            };
+
             if (generoSeleccionado) {
-                await api.put(`/generos/${generoSeleccionado.id}`, formData);
+                await api.put(`/generos/${generoSeleccionado.id}`, generoData);
                 toast.success('Género actualizado exitosamente');
             } else {
-                await api.post('/generos', formData);
+                await api.post('/generos', generoData);
                 toast.success('Género creado exitosamente');
             }
             handleCloseModal();
             cargarGeneros();
         } catch (error) {
             console.error('Error:', error);
-            toast.error('Error al guardar el género');
+            if (error.response?.data?.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error('Error al guardar el género');
+            }
         }
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm('¿Estás seguro de que deseas eliminar este género?')) {
-            try {
+        try {
+            const generoEnUso = peliculas.some(pelicula => pelicula.generoId === id);
+
+            if (generoEnUso) {
+                toast.error('No es permitido borrar este género porque está en uso en la aplicación');
+                return;
+            }
+
+            if (window.confirm('¿Estás seguro de que deseas eliminar este género?')) {
                 await api.delete(`/generos/${id}`);
                 cargarGeneros();
                 toast.success('Género eliminado exitosamente');
-            } catch (error) {
-                console.error('Error:', error);
-                toast.error('Error al eliminar el género');
             }
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error('Error al eliminar el género');
         }
     };
 
@@ -163,18 +186,15 @@ const Generos = () => {
                 <p className="text-center text-white mb-4">
                     Aquí encuentras información sobre los géneros cinematográficos y puedes gestionar esta información
                 </p>
-                <div className="d-flex justify-content-end mb-4">
-                    <Button 
-                        variant="primary" 
-                        onClick={() => handleShowModal()}
-                        className="d-flex align-items-center gap-2 new-director-button"
-                    >
-                        <FaPlus /> Nuevo Género
-                    </Button>
-                </div>
                 
                 <div className="table-wrapper">
+                <div className="d-flex justify-content-end mb-4" style={{ marginTop: '-20px' }}>
+                    <Button variant="primary" onClick={() => handleShowModal()} className="d-flex align-items-center gap-2 new-genero-button">
+                        <FaPlus /> Agregar
+                    </Button>
+                </div>
                     {loading ? (
+                        
                         <div className="text-center">
                             <Spinner animation="border" role="status">
                                 <span className="visually-hidden">Cargando...</span>
@@ -183,32 +203,21 @@ const Generos = () => {
                         </div>
                     ) : (
                         <div className="table-responsive">
-                            <Table striped bordered hover>
+                            <Table striped bordered hover style={{ width: '70%', margin: '0 auto' }}>
                                 <thead>
                                     <tr>
-                                        <th>Nombre</th>
-                                        <th>Descripción</th>
-                                        <th>Acciones</th>
+                                        <th style={{ width: '50%' }}>Nombre</th>
+                                        <th style={{ width: '50%' }}>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {generos.map((genero) => (
                                         <tr key={genero.id}>
                                             <td>{genero.nombre}</td>
-                                            <td>{genero.descripcion}</td>
                                             <td>
-                                                <FaEye 
-                                                    className="icon" 
-                                                    onClick={() => handleShowDetails(genero)}
-                                                />
-                                                <FaEdit 
-                                                    className="icon" 
-                                                    onClick={() => handleShowModal(genero)}
-                                                />
-                                                <FaTrash 
-                                                    className="icon" 
-                                                    onClick={() => handleDelete(genero.id)}
-                                                />
+                                                <FaEye className="icon fa-eye" onClick={() => handleShowDetails(genero)} title="Ver detalles" />
+                                                <FaEdit className="icon fa-edit" onClick={() => handleShowModal(genero)} title="Editar" />
+                                                <FaTrash className="icon fa-trash" onClick={() => handleDelete(genero.id)} title="Eliminar" />
                                             </td>
                                         </tr>
                                     ))}
@@ -217,10 +226,11 @@ const Generos = () => {
                         </div>
                     )}
                 </div>
-
+                
+                
                 <Modal show={showModal} onHide={handleCloseModal}>
                     <Modal.Header closeButton className="bg-primary text-white">
-                        <Modal.Title>
+                        <Modal.Title className="text-center w-100">
                             {generoSeleccionado ? 'Editar Género' : 'Nuevo Género'}
                         </Modal.Title>
                     </Modal.Header>
@@ -237,19 +247,8 @@ const Generos = () => {
                                     style={{ borderRadius: '20px' }}
                                 />
                             </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Descripción</Form.Label>
-                                <Form.Control
-                                    as="textarea"
-                                    name="descripcion"
-                                    value={formData.descripcion}
-                                    onChange={handleInputChange}
-                                    required
-                                    style={{ borderRadius: '20px' }}
-                                />
-                            </Form.Group>
                         </Modal.Body>
-                        <Modal.Footer>
+                        <Modal.Footer className="d-flex justify-content-center">
                             <Button variant="danger" onClick={handleCloseModal}>
                                 Cerrar
                             </Button>
@@ -262,7 +261,7 @@ const Generos = () => {
 
                 <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Detalles del Género</Modal.Title>
+                        <Modal.Title className="text-center w-100">Detalles del Género</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form>
@@ -274,17 +273,9 @@ const Generos = () => {
                                     disabled={true}
                                 />
                             </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Descripción</Form.Label>
-                                <Form.Control
-                                    as="textarea"
-                                    value={generoSeleccionado?.descripcion || ''}
-                                    disabled={true}
-                                />
-                            </Form.Group>
                         </Form>
                     </Modal.Body>
-                    <Modal.Footer>
+                    <Modal.Footer className="d-flex justify-content-center">
                         <Button variant="danger" onClick={handleCloseDetailsModal}>
                             Cerrar
                         </Button>

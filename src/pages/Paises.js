@@ -113,11 +113,26 @@ const Paises = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            const paisExistente = paises.find(
+                p => p.nombre.toLowerCase() === formData.nombre.toLowerCase() &&
+                    p.id !== paisSeleccionado?.id
+            );
+
+            if (paisExistente) {
+                toast.error('Ya existe un país con este nombre');
+                return;
+            }
+
+            const paisData = {
+                id: paisSeleccionado ? paisSeleccionado.id : 0,
+                nombre: formData.nombre
+            };
+
             if (paisSeleccionado) {
-                await api.put(`/paises/${paisSeleccionado.id}`, formData);
+                await api.put(`/paises/${paisSeleccionado.id}`, paisData);
                 toast.success('País actualizado exitosamente');
             } else {
-                await api.post('/paises', formData);
+                await api.post('/paises', paisData);
                 toast.success('País creado exitosamente');
             }
             handleCloseModal();
@@ -129,15 +144,22 @@ const Paises = () => {
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm('¿Estás seguro de que deseas eliminar este país?')) {
-            try {
+        try {
+            const paisEnUso = peliculas.some(pelicula => pelicula.paisId === id);
+
+            if (paisEnUso) {
+                toast.error('No es permitido borrar este país porque está en uso en la aplicación');
+                return;
+            }
+
+            if (window.confirm('¿Estás seguro de que deseas eliminar este país?')) {
                 await api.delete(`/paises/${id}`);
                 cargarPaises();
                 toast.success('País eliminado exitosamente');
-            } catch (error) {
-                console.error('Error:', error);
-                toast.error('Error al eliminar el país');
             }
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error('Error al eliminar el país');
         }
     };
 
@@ -148,17 +170,13 @@ const Paises = () => {
                 <p className="text-center text-white mb-4">
                     Aquí encuentras información sobre los países y puedes gestionar esta información
                 </p>
-                <div className="d-flex justify-content-end mb-4">
-                    <Button 
-                        variant="primary" 
-                        onClick={() => handleShowModal()}
-                        className="d-flex align-items-center gap-2 new-director-button"
-                    >
-                        <FaPlus /> Nuevo País
-                    </Button>
-                </div>
                 
                 <div className="table-wrapper">
+                <div className="d-flex justify-content-end mb-4" style={{ marginTop: '-20px' }}>
+                    <Button variant="primary" onClick={() => handleShowModal()} className="d-flex align-items-center gap-2 new-pais-button">
+                        <FaPlus /> Agregar
+                    </Button>
+                </div>
                     {loading ? (
                         <div className="text-center">
                             <Spinner animation="border" role="status">
@@ -168,11 +186,11 @@ const Paises = () => {
                         </div>
                     ) : (
                         <div className="table-responsive">
-                            <Table striped bordered hover>
+                            <Table striped bordered hover style={{ width: '70%', margin: '0 auto' }}>
                                 <thead>
                                     <tr>
-                                        <th>Nombre</th>
-                                        <th>Acciones</th>
+                                        <th style={{ width: '50%' }}>Nombre</th>
+                                        <th style={{ width: '50%' }}>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -180,21 +198,9 @@ const Paises = () => {
                                         <tr key={pais.id}>
                                             <td>{pais.nombre}</td>
                                             <td>
-                                                <FaEye 
-                                                    className="icon fa-eye" 
-                                                    onClick={() => handleShowDetails(pais)}
-                                                    title="Ver detalles"
-                                                />
-                                                <FaEdit 
-                                                    className="icon fa-edit" 
-                                                    onClick={() => handleShowModal(pais)}
-                                                    title="Editar"
-                                                />
-                                                <FaTrash 
-                                                    className="icon fa-trash" 
-                                                    onClick={() => handleDelete(pais.id)}
-                                                    title="Eliminar"
-                                                />
+                                                <FaEye className="icon fa-eye" onClick={() => handleShowDetails(pais)} title="Ver detalles" />
+                                                <FaEdit className="icon fa-edit" onClick={() => handleShowModal(pais)} title="Editar" />
+                                                <FaTrash className="icon fa-trash" onClick={() => handleDelete(pais.id)} title="Eliminar" />
                                             </td>
                                         </tr>
                                     ))}
@@ -203,11 +209,11 @@ const Paises = () => {
                         </div>
                     )}
                 </div>
+               
 
-                {/* Modal de Edición/Creación */}
                 <Modal show={showModal} onHide={handleCloseModal}>
                     <Modal.Header closeButton className="bg-primary text-white">
-                        <Modal.Title>
+                        <Modal.Title className="text-center w-100">
                             {paisSeleccionado ? 'Editar País' : 'Nuevo País'}
                         </Modal.Title>
                     </Modal.Header>
@@ -225,7 +231,7 @@ const Paises = () => {
                                 />
                             </Form.Group>
                         </Modal.Body>
-                        <Modal.Footer>
+                        <Modal.Footer className="d-flex justify-content-center">
                             <Button variant="danger" onClick={handleCloseModal}>
                                 Cerrar
                             </Button>
@@ -236,10 +242,9 @@ const Paises = () => {
                     </Form>
                 </Modal>
 
-                {/* Modal de Detalles */}
                 <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Detalles del País</Modal.Title>
+                        <Modal.Title className="text-center w-100">Detalles del País</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form>
@@ -253,7 +258,7 @@ const Paises = () => {
                             </Form.Group>
                         </Form>
                     </Modal.Body>
-                    <Modal.Footer>
+                    <Modal.Footer className="d-flex justify-content-center">
                         <Button variant="danger" onClick={handleCloseDetailsModal}>
                             Cerrar
                         </Button>

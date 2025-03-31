@@ -34,10 +34,8 @@ function App() {
                     theme="colored"
                 />
                 <Routes>
-                    {/* Ruta pública */}
                     <Route path="/login" element={<Login />} />
 
-                    {/* Rutas protegidas */}
                     <Route path="/welcome" element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <Welcome />
@@ -74,9 +72,6 @@ function App() {
                         </ProtectedRoute>
                     } />
 
-                    {/* Ruta por defecto y catch-all */}
-                    <Route path="/" element={<Navigate to="/welcome" replace />} />
-                    <Route path="*" element={<Navigate to="/login" replace />} />
                 </Routes>
             </Layout>
         </Router>

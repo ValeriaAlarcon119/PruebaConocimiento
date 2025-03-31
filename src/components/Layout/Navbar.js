@@ -16,7 +16,7 @@ const NavigationBar = () => {
     return (
         <Navbar bg="dark" variant="dark" expand="lg" className="navbar">
             <Container>
-                <Navbar.Brand as={Link} to="/welcome">CineFicción Studios</Navbar.Brand>
+                <Navbar.Brand as={Link} to="/welcome" style={{ color: '#add890' }}>Cine Estudio</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
@@ -27,9 +27,8 @@ const NavigationBar = () => {
                         <Nav.Link as={Link} to="/actores">Actores</Nav.Link>
                         <Nav.Link as={Link} to="/contacto">Contáctanos</Nav.Link>
                     </Nav>
-                    <div className="d-flex align-items-center" style={{ cursor: 'pointer' }} onClick={handleLogout}>
-                        <span style={{ textDecoration: 'underline', color: 'red', marginRight: '5px', marginBottom: '2px' }}>Salir</span>
-                        <FaChevronRight color="red" size={20} />
+                    <div className="d-flex align-items-center" style={{ cursor: 'pointer', marginLeft: 'auto', marginRight: '20px' }} onClick={handleLogout}>
+                        <span style={{ color: '#ff6666', marginBottom: '2px', fontWeight: 'bold' }}>Log out</span>
                     </div>
                 </Navbar.Collapse>
             </Container>

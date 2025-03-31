@@ -7,6 +7,7 @@ const Contacto = () => {
         <Container fluid className="mt-4 px-4">
             <h1 className="text-center mb-4 welcome-title">Contáctanos</h1>
             <Row className="justify-content-center">
+                {/* Fila 1 */}
                 <Col lg={3} md={6} className="mb-4">
                     <Card className="h-100 text-decoration-none welcome-card">
                         <Card.Body className="d-flex flex-column align-items-center">
@@ -33,6 +34,9 @@ const Contacto = () => {
                         </Card.Body>
                     </Card>
                 </Col>
+            </Row>
+            <Row className="justify-content-center">
+                {/* Fila 2 */}
                 <Col lg={3} md={6} className="mb-4">
                     <Card className="h-100 text-decoration-none welcome-card">
                         <Card.Body className="d-flex flex-column align-items-center">
