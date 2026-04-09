@@ -47,6 +47,7 @@ const Peliculas = () => {
         directorId: '',
         actoresIds: []
     });
+    const [actores, setActores] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isGenerating, setIsGenerating] = useState(false);
     const [isSearching, setIsSearching] = useState(false);
@@ -114,15 +115,17 @@ const Peliculas = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const [resPelis, resGen, resDir] = await Promise.all([
+            const [resPelis, resGen, resDir, resAct] = await Promise.all([
                 api.get('/peliculas'),
                 api.get('/generos'),
-                api.get('/directores')
+                api.get('/directores'),
+                api.get('/actores')
             ]);
             const mapData = (res) => Array.isArray(res.data) ? res.data : (res.data.$values || []);
             setPeliculas(mapData(resPelis));
             setGeneros(mapData(resGen));
             setDirectores(mapData(resDir));
+            setActores(mapData(resAct));
         } catch (error) {
             toast.error('Error de sincronización');
         } finally {
@@ -366,9 +369,18 @@ const Peliculas = () => {
                                                     {generos.find(g => g.id === parseInt(p.generoId))?.nombre || 'General'}
                                                 </Badge>
                                                 <h3 className="movie-title mb-1" style={{ fontSize: '1.4rem', fontWeight: '800' }}>{p.titulo}</h3>
-                                                <div className="text-dim extra-small mb-3 d-flex align-items-center gap-2" style={{ fontSize: '0.65rem' }}>
+                                                <div className="text-dim extra-small mb-2 d-flex align-items-center gap-2" style={{ fontSize: '0.65rem' }}>
                                                     <Clapperboard size={10} className="text-primary" /> 
                                                     <span>{directores.find(d => d.id === parseInt(p.directorId))?.nombre || 'EliteStream Studio'}</span>
+                                                </div>
+
+                                                <div className="d-flex flex-wrap gap-1 mb-3">
+                                                    {(p.actoresIds || []).slice(0, 3).map(id => (
+                                                        <span key={id} className="text-dim" style={{ fontSize: '0.55rem', border: '1px solid rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: '2px' }}>
+                                                            {actores.find(a => a.id === parseInt(id))?.nombre.split(' ')[0] || 'Actor'}
+                                                        </span>
+                                                    ))}
+                                                    {p.actoresIds?.length > 3 && <span className="text-dim" style={{ fontSize: '0.55rem' }}>+{p.actoresIds.length - 3}</span>}
                                                 </div>
                                                 
                                                 <div className="d-flex gap-2 mt-4">
@@ -496,6 +508,32 @@ const Peliculas = () => {
                                                 <Form.Group>
                                                     <Form.Label className="text-dim extra-small text-uppercase mb-2">Tráiler (ID YouTube)</Form.Label>
                                                     <Form.Control name="trailer" value={formData.trailer} onChange={handleInputChange} className="premium-input py-2" placeholder="TMDb Link" />
+                                                </Form.Group>
+                                            </Col>
+
+                                            <Col md={12}>
+                                                <Form.Group>
+                                                    <Form.Label className="text-primary extra-small text-uppercase mb-3 fw-bold d-block" style={{ letterSpacing: '4px' }}>Elenco Vinculado</Form.Label>
+                                                    <div className="d-flex flex-wrap gap-2 p-3" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', maxHeight: '150px', overflowY: 'auto', borderRadius: '4px' }}>
+                                                        {actores.map(actor => (
+                                                            <div key={actor.id} className="d-flex align-items-center gap-2 mb-2 me-3">
+                                                                <Form.Check 
+                                                                    type="checkbox"
+                                                                    id={`actor-${actor.id}`}
+                                                                    checked={(formData.actoresIds || []).includes(actor.id) || (formData.actoresIds || []).includes(actor.id.toString())}
+                                                                    onChange={(e) => {
+                                                                        const ids = formData.actoresIds || [];
+                                                                        if (e.target.checked) {
+                                                                            setFormData({ ...formData, actoresIds: [...ids, actor.id] });
+                                                                        } else {
+                                                                            setFormData({ ...formData, actoresIds: ids.filter(id => id != actor.id) });
+                                                                        }
+                                                                    }}
+                                                                />
+                                                                <label htmlFor={`actor-${actor.id}`} className="text-dim extra-small cursor-pointer mb-0" style={{ fontSize: '0.7rem' }}>{actor.nombre} {actor.apellido || ''}</label>
+                                                            </div>
+                                                        ))}
+                                                    </div>
                                                 </Form.Group>
                                             </Col>
                                         </Row>

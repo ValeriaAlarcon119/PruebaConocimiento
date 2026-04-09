@@ -29,23 +29,38 @@ const saveToStore = (key, data) => {
 
 const api = {
     get: async (url) => {
-        const key = url.replace('/', '');
-        if (!IS_LOCAL) {
+        const key = url.split('/')[1]; // Get base key (e.g., 'peliculas' from '/peliculas/1')
+        
+        try {
+            if (!IS_LOCAL) {
+                const localData = getStoredData(key);
+                if (localData) return { data: localData };
+            }
+            const response = await axiosInstance.get(url);
+            // Si es la primera vez en web, inicializamos el store local con los datos de Typicode
+            if (!IS_LOCAL && !getStoredData(key)) {
+                saveToStore(key, response.data);
+            }
+            return response;
+        } catch (error) {
+            console.warn(`Backend unreachable for GET ${url}, attempting LocalStorage fallback.`);
             const localData = getStoredData(key);
             if (localData) return { data: localData };
+            throw error;
         }
-        const response = await axiosInstance.get(url);
-        // Si es la primera vez en web, inicializamos el store local con los datos de Typicode
-        if (!IS_LOCAL && !getStoredData(key)) {
-            saveToStore(key, response.data);
-        }
-        return response;
     },
 
     post: async (url, data) => {
-        if (IS_LOCAL) return axiosInstance.post(url, data);
-        
         const key = url.replace('/', '');
+        try {
+            if (IS_LOCAL) {
+                const res = await axiosInstance.post(url, data);
+                return res;
+            }
+        } catch (error) {
+            console.warn("Backend fail on POST, using LocalStorage.");
+        }
+        
         const currentData = getStoredData(key) || [];
         const newItem = { ...data, id: Date.now() };
         const updated = [...currentData, newItem];
@@ -54,11 +69,19 @@ const api = {
     },
 
     put: async (url, data) => {
-        if (IS_LOCAL) return axiosInstance.put(url, data);
-
         const parts = url.split('/');
         const key = parts[1];
-        const id = parseInt(parts[2]);
+        const id = parts[2];
+
+        try {
+            if (IS_LOCAL) {
+                const res = await axiosInstance.put(url, data);
+                return res;
+            }
+        } catch (error) {
+            console.warn("Backend fail on PUT, using LocalStorage.");
+        }
+
         const currentData = getStoredData(key) || [];
         const updated = currentData.map(item => item.id == id ? { ...item, ...data } : item);
         saveToStore(key, updated);
@@ -66,11 +89,19 @@ const api = {
     },
 
     delete: async (url) => {
-        if (IS_LOCAL) return axiosInstance.delete(url);
-
         const parts = url.split('/');
         const key = parts[1];
-        const id = parseInt(parts[2]);
+        const id = parts[2];
+
+        try {
+            if (IS_LOCAL) {
+                const res = await axiosInstance.delete(url);
+                return res;
+            }
+        } catch (error) {
+            console.warn("Backend fail on DELETE, using LocalStorage.");
+        }
+
         const currentData = getStoredData(key) || [];
         const updated = currentData.filter(item => item.id != id);
         saveToStore(key, updated);
