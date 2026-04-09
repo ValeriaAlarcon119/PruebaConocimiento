@@ -1,0 +1,7 @@
+/* index.css global resets for 2026 Brutal UI */
+html, body, #root {
+  background-color: #050505 !important;
+  color: #fff !important;
+  margin: 0;
+  padding: 0;
+}

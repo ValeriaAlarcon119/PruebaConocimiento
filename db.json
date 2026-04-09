@@ -1,0 +1,972 @@
+{
+  "peliculas": [
+    {
+      "id": "1",
+      "titulo": "Твоё сердце будет разбито",
+      "resena": "Sin reseña disponible.",
+      "portada": "https://image.tmdb.org/t/p/w500/iGpMm603GUKH2SiXB2S5m4sZ17t.jpg",
+      "trailer": "dQw4w9WgXcQ",
+      "directorId": 1,
+      "generoId": 10749,
+      "actoresIds": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "2",
+      "titulo": "Avatar: Fuego y ceniza",
+      "resena": "Jake Sully y Neytiri enfrentan una nueva amenaza en Pandora: los Ash People, una tribu Na'vi violenta y sedienta de poder, liderada por la implacable Varang. Tras la devastadora guerra contra la RDA y la pérdida de su hijo mayor, la familia de Jake deberá luchar por su supervivencia y el futuro de Pandora en un conflicto que llevará a los personajes a sus límites emocionales y físicos. Con nuevos y antiguos aliados, esta épica visual y emocional redefine el destino de un mundo al borde del abismo.",
+      "portada": "https://image.tmdb.org/t/p/w500/4n1U0Mwn7djux6VKNYDRWPgS2x6.jpg",
+      "trailer": "Ma1x7ikpid8",
+      "directorId": 2,
+      "generoId": 878,
+      "actoresIds": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": "3",
+      "titulo": "Ruta de escape",
+      "resena": "[ANÁLISIS IA 2026] » 'Ruta de escape' redefine los límites de la cinematografía moderna. Una sinergia técnica impecable que fusiona una narrativa disruptiva con una potencia visual abrumadora.",
+      "portada": "https://image.tmdb.org/t/p/w500/oUF0tTmbwlfkhiYSU5nXJccr5K0.jpg",
+      "trailer": "KeEHsuZ4Ja4",
+      "directorId": 3,
+      "generoId": 80,
+      "actoresIds": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "paisId": null
+    },
+    {
+      "id": "4",
+      "titulo": "Mike y Nick y Nick y Alice",
+      "resena": "Dos gángsters y la mujer a la que aman intentan sobrevivir a la noche más peligrosa de sus vidas, en la que está implicada una máquina del tiempo.",
+      "portada": "https://image.tmdb.org/t/p/w500/k6PSvLUs84QJsWLt0Zlkoa8ih6V.jpg",
+      "trailer": "pI-2t18TXqs",
+      "directorId": 4,
+      "generoId": 35,
+      "actoresIds": [
+        16,
+        17,
+        18,
+        19,
+        20
+      ]
+    },
+    {
+      "id": "5",
+      "titulo": "Shelter: El Protector",
+      "resena": "Un recluso en una remota isla escocesa rescata a una niña del mar, desencadenando una peligrosa secuencia de acontecimientos.",
+      "portada": "https://image.tmdb.org/t/p/w500/kOsqd5jFZ0p3O8Z0k0VQvBW2neW.jpg",
+      "trailer": "auHiLFjaIc0",
+      "directorId": 5,
+      "generoId": 28,
+      "actoresIds": [
+        21,
+        22,
+        23,
+        24,
+        25
+      ]
+    },
+    {
+      "id": "6",
+      "titulo": "Hoppers",
+      "resena": "Una amante de los animales aprovecha la oportunidad de utilizar una tecnología que coloca su conciencia en un castor robótico, descubriendo misterios dentro del mundo animal que van más allá de lo que podría haber imaginado.",
+      "portada": "https://image.tmdb.org/t/p/w500/4Z0E1W7YvQ0aVtgj7KKtktb9ukd.jpg",
+      "trailer": "PypDSyIRRSs",
+      "directorId": 6,
+      "generoId": 16,
+      "actoresIds": [
+        26,
+        27,
+        28,
+        29,
+        30
+      ]
+    },
+    {
+      "id": "7",
+      "titulo": "Super Mario Galaxy la película",
+      "resena": "Secuela de 'Super Mario Bros: La película', basada en la saga 'Mario Galaxy'. Los hermanos Mario y Luigi y la princesa Peach emprenden una aventura hasta los confines del espacio y a través de la galaxia.",
+      "portada": "https://image.tmdb.org/t/p/w500/79EVB4qhyfrdlMgT8GIRAikdzsQ.jpg",
+      "trailer": "En5QZmL5R1s",
+      "directorId": 7,
+      "generoId": 16,
+      "actoresIds": [
+        31,
+        32,
+        33,
+        34,
+        35
+      ]
+    },
+    {
+      "id": "8",
+      "titulo": "GOAT: Como cabras",
+      "resena": "Will es una pequeña cabra con grandes sueños que recibe una oportunidad única en la vida para unirse a los profesionales y jugar al rugebol, un deporte de alta intensidad, mixto y de contacto total dominado por los animales más rápidos y feroces del mundo. A los nuevos compañeros de equipo de Will no les entusiasma tener a una cabrita en su plantilla, pero Will está decidido a revolucionar el deporte y demostrar de una vez por todas que «¡los pequeños saben jugar!».",
+      "portada": "https://image.tmdb.org/t/p/w500/l8Y8o3RpFg54gmQQ8GVaxVroFmY.jpg",
+      "trailer": "kmY-rYS7yng",
+      "directorId": 8,
+      "generoId": 16,
+      "actoresIds": [
+        36,
+        37,
+        38,
+        39,
+        40
+      ]
+    },
+    {
+      "id": "9",
+      "titulo": "Pretty Lethal",
+      "resena": "Un grupo de bailarinas lucha por sobrevivir mientras intentan escapar de una remota posada después de que su autobús se averíe de camino a una competición.",
+      "portada": "https://image.tmdb.org/t/p/w500/cmZqxJQ9MdNQEoD49HYghOXsiwH.jpg",
+      "trailer": "MpNobYCw0mg",
+      "directorId": 9,
+      "generoId": 27,
+      "actoresIds": [
+        41,
+        42,
+        43,
+        44,
+        45
+      ]
+    },
+    {
+      "id": "10",
+      "titulo": "Proyecto Salvación",
+      "resena": "El profesor de ciencias Ryland Grace se despierta en una nave espacial a años luz de casa sin recordar quién es ni cómo ha llegado hasta allí. A medida que recupera la memoria, empieza a descubrir su misión: resolver el enigma de la misteriosa sustancia que provoca la extinción del sol. Deberá recurrir a sus conocimientos científicos y a sus ideas poco ortodoxas para salvar todo lo que hay en la Tierra de la extinción... pero una amistad inesperada significa que quizá no tenga que hacerlo solo.",
+      "portada": "https://image.tmdb.org/t/p/w500/7lwOTxajURKEWO6gI370NTrVdBO.jpg",
+      "trailer": "NKYea63tQmI",
+      "directorId": 10,
+      "generoId": 878,
+      "actoresIds": [
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "id": "11",
+      "titulo": "Scream 7",
+      "resena": "Cuando un nuevo asesino Ghostface aparece en el tranquilo pueblo donde Sidney Prescott ha construido una nueva vida, sus peores miedos se hacen realidad cuando su hija se convierte en el siguiente objetivo. Decidida a proteger a su familia, Sidney debe enfrentarse a los horrores de su pasado para poner fin a la masacre de una vez por todas.",
+      "portada": "https://image.tmdb.org/t/p/w500/2pULHV2e3W7KNTyyfZl6dX071Np.jpg",
+      "trailer": "4g8OciWNJn4",
+      "directorId": 11,
+      "generoId": 27,
+      "actoresIds": [
+        51,
+        52,
+        53,
+        54,
+        55
+      ]
+    },
+    {
+      "id": "12",
+      "titulo": "Greenland 2",
+      "resena": "La familia Garrity superviviente debe abandonar la seguridad del búnker de Groenlandia y embarcarse en un peligroso viaje a través del diezmado páramo helado de Europa para encontrar un nuevo hogar.",
+      "portada": "https://image.tmdb.org/t/p/w500/q7aijAKE98Fcp6dgR6oWiUkFO2g.jpg",
+      "trailer": "hiD3zk0ZRFg",
+      "directorId": 12,
+      "generoId": 12,
+      "actoresIds": [
+        56,
+        57,
+        58,
+        59,
+        60
+      ]
+    },
+    {
+      "id": "13",
+      "titulo": "Máquina de guerra",
+      "resena": "En una última misión agotadora durante el entrenamiento para ser ranger, un ingeniero de combate debe liderar a su unidad contra una gigantesca máquina asesina de otro mundo.",
+      "portada": "https://image.tmdb.org/t/p/w500/5C18uOTbDZRvVIZcVRO747k2fUi.jpg",
+      "trailer": "AFuE1LRxm80",
+      "directorId": 13,
+      "generoId": 28,
+      "actoresIds": [
+        61,
+        62,
+        63,
+        64,
+        65
+      ],
+      "paisId": null
+    },
+    {
+      "id": "14",
+      "titulo": "Humint",
+      "resena": "Un agente surcoreano investiga una red de narcotráfico en Rusia y debe colaborar con un agente norcoreano, lo cual los lleva correr riesgos y descubrir secretos muy turbios.",
+      "portada": "https://image.tmdb.org/t/p/w500/3xI81SsZHRKY0ltVKbILbvU3wa4.jpg",
+      "trailer": "n6scQ_ds0x8",
+      "directorId": 14,
+      "generoId": 53,
+      "actoresIds": [
+        66,
+        67,
+        68,
+        69,
+        70
+      ]
+    },
+    {
+      "id": "15",
+      "titulo": "Super Mario Bros: La película",
+      "resena": "Mientras trabajan en una avería subterránea, los fontaneros de Brooklyn, Mario y su hermano Luigi, viajan por una misteriosa tubería hasta un nuevo mundo mágico. Pero, cuando los hermanos se separan, Mario deberá emprender una épica misión para encontrar a Luigi. Con la ayuda del champiñón local Toad y unas cuantas nociones de combate de la guerrera líder del Reino Champiñón, la princesa Peach, Mario descubre todo el poder que alberga en su interior.",
+      "portada": "https://image.tmdb.org/t/p/w500/k36QyeVsy851npTUQL08jO8hqip.jpg",
+      "trailer": "RjNcTBXTk4I",
+      "directorId": 15,
+      "generoId": 10751,
+      "actoresIds": [
+        31,
+        33,
+        32,
+        34,
+        35
+      ]
+    },
+    {
+      "id": "16",
+      "titulo": "Starbright",
+      "resena": "Una mujer encuentra el secreto para hacer realidad sus deseos.",
+      "portada": "https://image.tmdb.org/t/p/w500/m1Zl07DNYeSyNcz9hf8hDsS2oB5.jpg",
+      "trailer": "hBxMbl2V3ZA",
+      "directorId": 16,
+      "generoId": 12,
+      "actoresIds": [
+        71,
+        72,
+        73,
+        74,
+        75
+      ]
+    },
+    {
+      "id": "17",
+      "titulo": "SEND HELP (Enviad ayuda)",
+      "resena": "Después de que un accidente de avión deje varados en una isla remota a una competente empleada y a su insoportable jefe, ella deberá utilizar sus habilidades de supervivencia para mantenerlos a ambos con vida, a pesar de su difícil relación.",
+      "portada": "https://image.tmdb.org/t/p/w500/qXZZtyzuTX3KMfSLssCR6J0mODd.jpg",
+      "trailer": "cOmnmFz_Uzs",
+      "directorId": 17,
+      "generoId": 27,
+      "actoresIds": [
+        76,
+        77,
+        78,
+        79,
+        80
+      ]
+    },
+    {
+      "id": "18",
+      "titulo": "रॉकी और रानी की प्रेम कहानी",
+      "resena": "Sin reseña disponible.",
+      "portada": "https://image.tmdb.org/t/p/w500/vTQIqlxUkOuyf2UKhlM2OUaFGKz.jpg",
+      "trailer": "LHm2RyKo0_M",
+      "directorId": 18,
+      "generoId": 35,
+      "actoresIds": [
+        81,
+        82,
+        83,
+        84,
+        85
+      ]
+    },
+    {
+      "id": "19",
+      "titulo": "Zootrópolis 2",
+      "resena": "Después de resolver el caso más importante en la historia de Zootrópolis, los policías novatos Judy Hopps y Nick Wilde descubren que su asociación no es tan sólida como pensaban cuando el Jefe Bogo les ordena unirse al programa de consejería \"Compañeros en Crisis\". Pero no pasa mucho tiempo para que su asociación se ponga a prueba al máximo, cuando la llegada de Gary, la serpiente, pone la ciudad patas arriba.",
+      "portada": "https://image.tmdb.org/t/p/w500/4fRdfQPjHiuDSkzaxFAV44k7Iem.jpg",
+      "trailer": "sEgPQ7HKoBA",
+      "directorId": 19,
+      "generoId": 16,
+      "actoresIds": [
+        86,
+        87,
+        88,
+        89,
+        90
+      ]
+    },
+    {
+      "id": "20",
+      "titulo": "La pasión de Cristo",
+      "resena": "Año 33 de nuestra era. En la provincia romana de Judea, un misterioso carpintero llamado Jesús de Nazareth comienza a anunciar la llegada del \"reino de Dios\" y se rodea de un grupo de humildes pescadores: los Apóstoles. Durante siglos, el pueblo judío había esperado la llegada del Mesías - personaje providencial que liberaría su sagrada patria e instauraría un nuevo orden basado en la justicia-. Las enseñanzas de Jesús atraen a una gran multitud de seguidores que lo reconocen como el Mesías. Alarmado por la situación, el Sanedrín, con la ayuda de Judas Iscariote, uno de los doce Apóstoles, arresta a Jesús. Acusado de traición a Roma, Cristo es entregado a Poncio Pilato, quien, para evitar un motín, lo condena a a morir en la cruz como un vulgar criminal.",
+      "portada": "https://image.tmdb.org/t/p/w500/qPSyfz3yzTHXh1s8KRNy5YMNQJL.jpg",
+      "trailer": "4Aif1qEB_JU",
+      "directorId": 20,
+      "generoId": 18,
+      "actoresIds": [
+        91,
+        92,
+        93,
+        94,
+        95
+      ]
+    },
+    {
+      "id": "21",
+      "titulo": "The Substance",
+      "resena": "Una celebridad que se desvanece de la fama decide utilizar una droga del mercado negro, una sustancia que replica sus células y crea temporalmente una versión más joven y mejor de sí misma, sin saber que el equilibrio entre sus dos identidades se fragmentará con consecuencias atroces.",
+      "portada": "https://image.tmdb.org/t/p/w500/lqoMzCcZYEFK729d6qzt349fB4o.jpg",
+      "trailer": "LNlrGhBpYjc",
+      "directorId": 21,
+      "generoId": 27,
+      "actoresIds": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "22",
+      "titulo": "Deadpool & Wolverine",
+      "resena": "Un apático Wade Wilson se afana en la vida civil. Sus días como el mercenario moralmente flexible, Deadpool, han quedado atrás. Cuando su mundo natal se enfrenta a una amenaza existencial, Wade debe volver a ponerse el traje a regañadientes con un aún más reacio... ¿reacio? ¿reacuante? Tiene que convencer a un Lobezno que se resiste a ayudarle.",
+      "portada": "https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg",
+      "trailer": "Yd4766E1FcA",
+      "directorId": 2,
+      "generoId": 28,
+      "actoresIds": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": "23",
+      "titulo": "Longlegs",
+      "resena": "A la agente del FBI Lee Harker, una nueva y talentosa recluta, le asignan el caso sin resolver de un escurridizo asesino en serie. A medida que el caso toma giros complejos, revelando pruebas de lo oculto, Harker descubre una conexión personal con el despiadado asesino y debe correr contra el tiempo para detenerlo antes de que se cobre la vida de otra familia inocente.",
+      "portada": "https://image.tmdb.org/t/p/w500/1EwNyiiNFd863H4e8nWEzutnZD7.jpg",
+      "trailer": "V6Xp9S_0DkY",
+      "directorId": 22,
+      "generoId": 80,
+      "actoresIds": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": "24",
+      "titulo": "Robot salvaje",
+      "resena": "El épico viaje de un robot -la unidad ROZZUM 7134, \"Roz\"- que naufraga en una isla deshabitada y debe aprender a adaptarse al duro entorno, entablando gradualmente relaciones con los animales de la isla y convirtiéndose en padre adoptivo de un gansito huérfano.",
+      "portada": "https://image.tmdb.org/t/p/w500/eG9lz41mJqsI4J6ubMtVqD26q2J.jpg",
+      "trailer": "L0Z0-4l1m9U",
+      "directorId": 15,
+      "generoId": 16,
+      "actoresIds": [
+        33,
+        34
+      ]
+    }
+  ],
+  "directores": [
+    {
+      "id": "1",
+      "nombre": "Mikhail Vaynberg",
+      "paisId": 5
+    },
+    {
+      "id": "21",
+      "nombre": "Coralie Fargeat",
+      "paisId": 1
+    },
+    {
+      "id": "22",
+      "nombre": "Osgood Perkins",
+      "paisId": 5
+    },
+    {
+      "id": "2",
+      "nombre": "James Cameron",
+      "paisId": 1
+    },
+    {
+      "id": "3",
+      "nombre": "Bart Layton",
+      "paisId": 4
+    },
+    {
+      "id": "4",
+      "nombre": "BenDavid Grabinski",
+      "paisId": 5
+    },
+    {
+      "id": "5",
+      "nombre": "Ric Roman Waugh",
+      "paisId": 2
+    },
+    {
+      "id": "6",
+      "nombre": "Daniel Chong",
+      "paisId": 1
+    },
+    {
+      "id": "7",
+      "nombre": "Michael Jelenic",
+      "paisId": 1
+    },
+    {
+      "id": "8",
+      "nombre": "Tyree Dillihay",
+      "paisId": 3
+    },
+    {
+      "id": "9",
+      "nombre": "Vicky Jewson",
+      "paisId": 4
+    },
+    {
+      "id": "10",
+      "nombre": "Phil Lord",
+      "paisId": 4
+    },
+    {
+      "id": "11",
+      "nombre": "Kevin Williamson",
+      "paisId": 2
+    },
+    {
+      "id": "12",
+      "nombre": "Ric Roman Waugh",
+      "paisId": 5
+    },
+    {
+      "id": "13",
+      "nombre": "Patrick Hughes",
+      "paisId": 4
+    },
+    {
+      "id": "14",
+      "nombre": "Ryoo Seung-wan",
+      "paisId": 5
+    },
+    {
+      "id": "15",
+      "nombre": "Aaron Horvath",
+      "paisId": 5
+    },
+    {
+      "id": "16",
+      "nombre": "Francesco Lucente",
+      "paisId": 4
+    },
+    {
+      "id": "17",
+      "nombre": "Sam Raimi",
+      "paisId": 5
+    },
+    {
+      "id": "18",
+      "nombre": "Karan Johar",
+      "paisId": 5
+    },
+    {
+      "id": "19",
+      "nombre": "Jared Bush",
+      "paisId": 1
+    },
+    {
+      "id": "20",
+      "nombre": "Mel Gibson",
+      "paisId": 4
+    }
+  ],
+  "actores": [
+    {
+      "id": "1",
+      "nombre": "Daniel Vegas"
+    },
+    {
+      "id": "2",
+      "nombre": "Veronika Zhuravleva"
+    },
+    {
+      "id": "3",
+      "nombre": "Ivan Trushin"
+    },
+    {
+      "id": "4",
+      "nombre": "Maksim Saprykin"
+    },
+    {
+      "id": "5",
+      "nombre": "Alya Mayer"
+    },
+    {
+      "id": "6",
+      "nombre": "Sam Worthington"
+    },
+    {
+      "id": "7",
+      "nombre": "Zoe Saldaña"
+    },
+    {
+      "id": "8",
+      "nombre": "Sigourney Weaver"
+    },
+    {
+      "id": "9",
+      "nombre": "Stephen Lang"
+    },
+    {
+      "id": "10",
+      "nombre": "Oona Chaplin"
+    },
+    {
+      "id": "11",
+      "nombre": "Chris Hemsworth"
+    },
+    {
+      "id": "12",
+      "nombre": "Mark Ruffalo"
+    },
+    {
+      "id": "13",
+      "nombre": "Halle Berry"
+    },
+    {
+      "id": "14",
+      "nombre": "Barry Keoghan"
+    },
+    {
+      "id": "15",
+      "nombre": "Monica Barbaro"
+    },
+    {
+      "id": "16",
+      "nombre": "James Marsden"
+    },
+    {
+      "id": "17",
+      "nombre": "Vince Vaughn"
+    },
+    {
+      "id": "18",
+      "nombre": "Eiza González"
+    },
+    {
+      "id": "19",
+      "nombre": "Keith David"
+    },
+    {
+      "id": "20",
+      "nombre": "Jimmy Tatro"
+    },
+    {
+      "id": "21",
+      "nombre": "Jason Statham"
+    },
+    {
+      "id": "22",
+      "nombre": "Bodhi Rae Breathnach"
+    },
+    {
+      "id": "23",
+      "nombre": "Michael Shaeffer"
+    },
+    {
+      "id": "24",
+      "nombre": "Anna Crilly"
+    },
+    {
+      "id": "25",
+      "nombre": "Bill Nighy"
+    },
+    {
+      "id": "26",
+      "nombre": "Piper Curda"
+    },
+    {
+      "id": "27",
+      "nombre": "Bobby Moynihan"
+    },
+    {
+      "id": "28",
+      "nombre": "Jon Hamm"
+    },
+    {
+      "id": "29",
+      "nombre": "Kathy Najimy"
+    },
+    {
+      "id": "30",
+      "nombre": "Dave Franco"
+    },
+    {
+      "id": "31",
+      "nombre": "Chris Pratt"
+    },
+    {
+      "id": "32",
+      "nombre": "Charlie Day"
+    },
+    {
+      "id": "33",
+      "nombre": "Anya Taylor-Joy"
+    },
+    {
+      "id": "34",
+      "nombre": "Jack Black"
+    },
+    {
+      "id": "35",
+      "nombre": "Keegan-Michael Key"
+    },
+    {
+      "id": "36",
+      "nombre": "Caleb McLaughlin"
+    },
+    {
+      "id": "37",
+      "nombre": "Gabrielle Union"
+    },
+    {
+      "id": "38",
+      "nombre": "Stephen Curry"
+    },
+    {
+      "id": "39",
+      "nombre": "Aaron Pierre"
+    },
+    {
+      "id": "40",
+      "nombre": "Nicola Coughlan"
+    },
+    {
+      "id": "41",
+      "nombre": "Maddie Ziegler"
+    },
+    {
+      "id": "42",
+      "nombre": "Lana Condor"
+    },
+    {
+      "id": "43",
+      "nombre": "Iris Apatow"
+    },
+    {
+      "id": "44",
+      "nombre": "Millicent Simmonds"
+    },
+    {
+      "id": "45",
+      "nombre": "Avantika"
+    },
+    {
+      "id": "46",
+      "nombre": "Ryan Gosling"
+    },
+    {
+      "id": "47",
+      "nombre": "James Ortiz"
+    },
+    {
+      "id": "48",
+      "nombre": "Sandra Hüller"
+    },
+    {
+      "id": "49",
+      "nombre": "Lionel Boyce"
+    },
+    {
+      "id": "50",
+      "nombre": "Milana Vayntrub"
+    },
+    {
+      "id": "51",
+      "nombre": "Neve Campbell"
+    },
+    {
+      "id": "52",
+      "nombre": "Courteney Cox"
+    },
+    {
+      "id": "53",
+      "nombre": "Isabel May"
+    },
+    {
+      "id": "54",
+      "nombre": "Jasmin Savoy Brown"
+    },
+    {
+      "id": "55",
+      "nombre": "Mason Gooding"
+    },
+    {
+      "id": "56",
+      "nombre": "Gerard Butler"
+    },
+    {
+      "id": "57",
+      "nombre": "Morena Baccarin"
+    },
+    {
+      "id": "58",
+      "nombre": "Roman Griffin Davis"
+    },
+    {
+      "id": "59",
+      "nombre": "Tommie Earl Jenkins"
+    },
+    {
+      "id": "60",
+      "nombre": "Trond Fausa Aurvåg"
+    },
+    {
+      "id": "61",
+      "nombre": "Alan Ritchson"
+    },
+    {
+      "id": "62",
+      "nombre": "Dennis Quaid"
+    },
+    {
+      "id": "63",
+      "nombre": "Stephan James"
+    },
+    {
+      "id": "64",
+      "nombre": "Jai Courtney"
+    },
+    {
+      "id": "65",
+      "nombre": "Esai Morales"
+    },
+    {
+      "id": "66",
+      "nombre": "Zo In-sung"
+    },
+    {
+      "id": "67",
+      "nombre": "Park Jeong-min"
+    },
+    {
+      "id": "68",
+      "nombre": "Park Hae-joon"
+    },
+    {
+      "id": "69",
+      "nombre": "Shin Sae-kyeong"
+    },
+    {
+      "id": "70",
+      "nombre": "Robert Maaser"
+    },
+    {
+      "id": "71",
+      "nombre": "John Rhys-Davies"
+    },
+    {
+      "id": "72",
+      "nombre": "Ted Levine"
+    },
+    {
+      "id": "73",
+      "nombre": "Elisabeth Röhm"
+    },
+    {
+      "id": "74",
+      "nombre": "Diego Boneta"
+    },
+    {
+      "id": "75",
+      "nombre": "Alexandra Dowling"
+    },
+    {
+      "id": "76",
+      "nombre": "Rachel McAdams"
+    },
+    {
+      "id": "77",
+      "nombre": "Dylan O'Brien"
+    },
+    {
+      "id": "78",
+      "nombre": "Edyll Ismail"
+    },
+    {
+      "id": "79",
+      "nombre": "Dennis Haysbert"
+    },
+    {
+      "id": "80",
+      "nombre": "Xavier Samuel"
+    },
+    {
+      "id": "81",
+      "nombre": "Alia Bhatt"
+    },
+    {
+      "id": "82",
+      "nombre": "Ranveer Singh"
+    },
+    {
+      "id": "83",
+      "nombre": "Jaya Bachchan"
+    },
+    {
+      "id": "84",
+      "nombre": "Shabana Azmi"
+    },
+    {
+      "id": "85",
+      "nombre": "Dharmendra"
+    },
+    {
+      "id": "86",
+      "nombre": "Ginnifer Goodwin"
+    },
+    {
+      "id": "87",
+      "nombre": "Jason Bateman"
+    },
+    {
+      "id": "88",
+      "nombre": "Ke Huy Quan"
+    },
+    {
+      "id": "89",
+      "nombre": "Fortune Feimster"
+    },
+    {
+      "id": "90",
+      "nombre": "Andy Samberg"
+    },
+    {
+      "id": "91",
+      "nombre": "Jim Caviezel"
+    },
+    {
+      "id": "92",
+      "nombre": "Maia Morgenstern"
+    },
+    {
+      "id": "93",
+      "nombre": "Christo Jivkov"
+    },
+    {
+      "id": "94",
+      "nombre": "Francesco De Vito"
+    },
+    {
+      "id": "95",
+      "nombre": "Monica Bellucci"
+    }
+  ],
+  "generos": [
+    {
+      "id": "28",
+      "nombre": "Acción"
+    },
+    {
+      "id": "12",
+      "nombre": "Aventura"
+    },
+    {
+      "id": "16",
+      "nombre": "Animación"
+    },
+    {
+      "id": "35",
+      "nombre": "Comedia"
+    },
+    {
+      "id": "80",
+      "nombre": "Crimen"
+    },
+    {
+      "id": "99",
+      "nombre": "Documental"
+    },
+    {
+      "id": "18",
+      "nombre": "Drama"
+    },
+    {
+      "id": "10751",
+      "nombre": "Familia"
+    },
+    {
+      "id": "14",
+      "nombre": "Fantasía"
+    },
+    {
+      "id": "36",
+      "nombre": "Historia"
+    },
+    {
+      "id": "27",
+      "nombre": "Terror"
+    },
+    {
+      "id": "10402",
+      "nombre": "Música"
+    },
+    {
+      "id": "9648",
+      "nombre": "Misterio"
+    },
+    {
+      "id": "10749",
+      "nombre": "Romance"
+    },
+    {
+      "id": "878",
+      "nombre": "Ciencia ficción"
+    },
+    {
+      "id": "10770",
+      "nombre": "Película de TV"
+    },
+    {
+      "id": "53",
+      "nombre": "Suspense"
+    },
+    {
+      "id": "10752",
+      "nombre": "Bélica"
+    },
+    {
+      "id": "37",
+      "nombre": "Western"
+    }
+  ],
+  "paises": [
+    {
+      "id": "1",
+      "nombre": "Estados Unidos"
+    },
+    {
+      "id": "2",
+      "nombre": "España"
+    },
+    {
+      "id": "3",
+      "nombre": "Colombia"
+    },
+    {
+      "id": "4",
+      "nombre": "Reino Unido"
+    },
+    {
+      "id": "5",
+      "nombre": "Corea del Sur"
+    }
+  ]
+}
