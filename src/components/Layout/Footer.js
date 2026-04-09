@@ -58,7 +58,7 @@ const Footer = () => {
                     </Col>
                 </Row>
                 
-                <div className="mt-5 pt-5 border-top border-secondary opacity-25 d-flex justify-content-between align-items-center">
+                <div className="footer-bottom mt-5 pt-5 border-top border-secondary opacity-25 d-flex justify-content-between align-items-center">
                     <p className="extra-small text-dim m-0">&copy; 2026 ELITESTREAM PRO OS. TODOS LOS DERECHOS RESERVADOS.</p>
                     <p className="extra-small text-dim m-0">BUERAU VERITAS CERTIFIED CATALOG - v4.12.0</p>
                 </div>

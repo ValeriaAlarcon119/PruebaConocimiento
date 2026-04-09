@@ -27,11 +27,16 @@ const ActorProfilePhoto = ({ nombre, apellido }) => {
 
     useEffect(() => {
         const fetchFoto = async () => {
+            if (!nombre) return;
             try {
-                const fullName = `${nombre} ${apellido}`;
-                const res = await axios.get(`https://api.themoviedb.org/3/search/person?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(fullName)}&language=es-ES`);
-                if (res.data.results && res.data.results[0]?.profile_path) {
-                    setFoto(`https://image.tmdb.org/t/p/w500${res.data.results[0].profile_path}`);
+                const fullName = `${nombre} ${apellido || ''}`.trim();
+                const res = await axios.get(`https://api.themoviedb.org/3/search/person?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(fullName)}&language=es-ES&include_adult=false`);
+                if (res.data.results && res.data.results.length > 0) {
+                    // Ordenamos por popularidad para obtener el resultado más probable
+                    const bestMatch = res.data.results.sort((a, b) => b.popularity - a.popularity)[0];
+                    if (bestMatch.profile_path) {
+                        setFoto(`https://image.tmdb.org/t/p/w500${bestMatch.profile_path}`);
+                    }
                 }
             } catch (err) {
                 console.error("TMDB Error", err);
@@ -43,13 +48,19 @@ const ActorProfilePhoto = ({ nombre, apellido }) => {
     }, [nombre, apellido]);
 
     return (
-        <div style={{ position: 'relative', width: '100%', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '50%', border: '4px solid rgba(59, 130, 246, 0.1)', background: 'rgba(255,255,255,0.02)' }}>
+        <div style={{ position: 'relative', width: '100%', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '50%', border: '4px solid rgba(59, 130, 246, 0.2)', background: 'rgba(255,255,255,0.02)', boxShadow: '0 0 30px rgba(59, 130, 246, 0.1)' }}>
             {loading ? (
                 <div className="d-flex align-items-center justify-content-center h-100">
                     <Spinner size="sm" animation="grow" variant="primary" />
                 </div>
             ) : foto ? (
-                <img src={foto} alt={nombre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <motion.img 
+                    initial={{ opacity: 0, scale: 1.1 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    src={foto} 
+                    alt={nombre} 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                />
             ) : (
                 <div className="d-flex align-items-center justify-content-center h-100 opacity-20">
                     <Camera size={40} />
@@ -129,18 +140,61 @@ const Actores = () => {
     // FETCH DETAILED BIO FOR MODAL
     useEffect(() => {
         if (showModal && actorSeleccionado) {
+            // Intelligent Name Splitting: Si el apellido está vacío en DB pero el nombre tiene espacios
+            if (!formData.apellido && formData.nombre.includes(' ')) {
+                const parts = formData.nombre.trim().split(' ');
+                const firstName = parts[0];
+                const lastName = parts.slice(1).join(' ');
+                setFormData(prev => ({ ...prev, nombre: firstName, apellido: lastName }));
+            }
+
             const fetchBio = async () => {
                 setIsFetchingBio(true);
                 try {
-                    const fullName = `${actorSeleccionado.nombre} ${actorSeleccionado.apellido}`;
-                    const res = await axios.get(`https://api.themoviedb.org/3/search/person?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(fullName)}&language=es-ES`);
-                    if (res.data.results && res.data.results[0]) {
-                        const personId = res.data.results[0].id;
-                        const detailRes = await axios.get(`https://api.themoviedb.org/3/person/${personId}?api_key=${TMDB_API_KEY}&language=es-ES`);
+                    const fullName = `${actorSeleccionado.nombre} ${actorSeleccionado.apellido || ''}`.trim();
+                    let searchRes = await axios.get(`https://api.themoviedb.org/3/search/person?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(fullName)}&language=es-ES&include_adult=false`);
+                    
+                    // FALLBACK: Si no hay resultados con nombre completo, intentar solo con el nombre
+                    if ((!searchRes.data.results || searchRes.data.results.length === 0) && actorSeleccionado.nombre) {
+                        searchRes = await axios.get(`https://api.themoviedb.org/3/search/person?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(actorSeleccionado.nombre)}&language=es-ES&include_adult=false`);
+                    }
+
+                    if (searchRes.data.results && searchRes.data.results.length > 0) {
+                        // Ordenar por popularidad para evitar homónimos desconocidos
+                        const sortedResults = searchRes.data.results.sort((a, b) => b.popularity - a.popularity);
+                        const person = sortedResults[0];
+                        const personId = person.id;
+                        
+                        // Intentar obtener detalles en español
+                        let detailRes = await axios.get(`https://api.themoviedb.org/3/person/${personId}?api_key=${TMDB_API_KEY}&language=es-ES`);
+                        
+                        // Si la bio está vacía, intentar en inglés
+                        if (!detailRes.data.biography) {
+                            const enRes = await axios.get(`https://api.themoviedb.org/3/person/${personId}?api_key=${TMDB_API_KEY}&language=en-US`);
+                            if (enRes.data.biography) {
+                                detailRes.data.biography = enRes.data.biography;
+                            }
+                        }
+
+                        // Si la bio sigue vacía después de ES y EN, generar una biografía basada en sus obras conocidas
+                        if (!detailRes.data.biography) {
+                            const creditsRes = await axios.get(`https://api.themoviedb.org/3/person/${personId}/combined_credits?api_key=${TMDB_API_KEY}&language=es-ES`);
+                            const topWorks = creditsRes.data.cast?.sort((a, b) => b.popularity - a.popularity).slice(0, 3).map(w => w.title || w.name).join(', ');
+                            if (topWorks) {
+                                detailRes.data.biography = `Intérprete reconocido internacionalmente por su participación en producciones de alto impacto como ${topWorks}. Cuenta con una trayectoria sólida en la industria cinematográfica global.`;
+                            }
+                        }
+
                         setExtraInfo({
-                            bio: detailRes.data.biography || 'Sin registros biográficos en el archivo central.',
-                            foto: `https://image.tmdb.org/t/p/w500${detailRes.data.profile_path}`
+                            bio: detailRes.data.biography || 'No hay biografía detallada disponible para este intérprete en los registros internacionales.',
+                            foto: detailRes.data.profile_path ? `https://image.tmdb.org/t/p/w500${detailRes.data.profile_path}` : '',
+                            nacimiento: detailRes.data.birthday || 'Información no disponible',
+                            lugar: detailRes.data.place_of_birth || 'No especificado en el registro',
+                            popularidad: detailRes.data.popularity ? detailRes.data.popularity.toFixed(1) : '0'
                         });
+                    } else {
+                        // Si después de los intentos sigue vacío
+                        setExtraInfo({ bio: 'No se encontraron registros de este actor en la base de datos global de TMDb.', foto: '', nacimiento: 'Sin datos', lugar: 'Sin datos', popularidad: '0' });
                     }
                 } catch (err) {
                     console.error("TMDB Detail Error", err);
@@ -150,7 +204,7 @@ const Actores = () => {
             };
             fetchBio();
         } else {
-            setExtraInfo({ bio: '', foto: '' });
+            setExtraInfo({ bio: '', foto: '', nacimiento: '', lugar: '', popularidad: '' });
         }
     }, [showModal, actorSeleccionado]);
 
@@ -202,8 +256,8 @@ const Actores = () => {
     return (
         <div style={{ backgroundColor: 'transparent', minHeight: '100vh', padding: '10px 0' }}>
             <Container className="custom-container">
-                <div className="d-flex justify-content-between align-items-end mb-4 border-bottom border-secondary pb-4" style={{ marginTop: '-10px' }}>
-                    <motion.div initial="hidden" animate="visible" variants={titleVariants} className="d-flex gap-1">
+                <div className="header-flex-mobile d-flex justify-content-between align-items-end mb-4 border-bottom border-secondary pb-4" style={{ marginTop: '-10px' }}>
+                    <motion.div initial="hidden" animate="visible" variants={titleVariants} className="d-flex flex-wrap gap-1">
                         {title.split("").map((char, index) => (
                             <motion.span 
                                 key={index} 
@@ -238,9 +292,14 @@ const Actores = () => {
                         <Spinner animation="border" style={{ color: 'var(--primary)' }} />
                     </div>
                 ) : (
-                    <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="row g-4">
+                    <motion.div 
+                        variants={containerVariants} 
+                        initial="hidden" 
+                        animate="visible" 
+                        className="row g-5 justify-content-center"
+                    >
                         {actores.map((actor) => (
-                            <Col key={actor.id} xl={3} lg={4} md={6}>
+                            <Col key={actor.id} xl={3} lg={4} md={6} className="actor-card-mobile">
                                 <motion.div variants={itemVariants} className="movie-card-premium p-4 text-center d-flex flex-column align-items-center gap-3" style={{ background: 'linear-gradient(145deg, rgba(8, 20, 48, 0.4), rgba(2, 6, 23, 0.6))', border: '1px solid rgba(59, 130, 246, 0.1)', borderRadius: '16px' }}>
                                     <div style={{ width: '130px' }}>
                                         <ActorProfilePhoto nombre={actor.nombre} apellido={actor.apellido} />
@@ -312,16 +371,32 @@ const Actores = () => {
                                     </Col>
                                     
                                     <Col lg={8}>
-                                        <div className="mb-5">
-                                            <Form.Label className="text-primary extra-small text-uppercase mb-3 fw-bold" style={{ letterSpacing: '4px' }}>Trayectoria / Biografía</Form.Label>
-                                            {isFetchingBio ? (
-                                                <div className="py-3"><Spinner animation="grow" size="sm" variant="primary" /> <span className="text-dim ms-2">Accediendo a TMDB Intelligence...</span></div>
-                                            ) : (
-                                                <p className="text-white-50" style={{ fontSize: '0.95rem', lineHeight: '1.8', textAlign: 'justify' }}>
-                                                    {extraInfo.bio}
-                                                </p>
-                                            )}
-                                        </div>
+                                         <div className="mb-4">
+                                             <Form.Label className="text-primary extra-small text-uppercase mb-3 fw-bold" style={{ letterSpacing: '4px' }}>Trayectoria / Biografía</Form.Label>
+                                             {isFetchingBio ? (
+                                                 <div className="py-3"><Spinner animation="grow" size="sm" variant="primary" /> <span className="text-dim ms-2">Accediendo a TMDB Intelligence...</span></div>
+                                             ) : (
+                                                 <>
+                                                     <div className="d-flex gap-4 mb-4 border-bottom border-secondary border-opacity-10 pb-3">
+                                                         <div>
+                                                             <p className="text-dim extra-small text-uppercase mb-1" style={{ fontSize: '0.6rem' }}>Nacimiento</p>
+                                                             <p className="text-white small mb-0">{extraInfo.nacimiento}</p>
+                                                         </div>
+                                                         <div>
+                                                             <p className="text-dim extra-small text-uppercase mb-1" style={{ fontSize: '0.6rem' }}>Lugar</p>
+                                                             <p className="text-white small mb-0">{extraInfo.lugar}</p>
+                                                         </div>
+                                                         <div>
+                                                             <p className="text-dim extra-small text-uppercase mb-1" style={{ fontSize: '0.6rem' }}>Rating Global</p>
+                                                             <p className="text-primary small mb-0 fw-bold">★ {extraInfo.popularidad}</p>
+                                                         </div>
+                                                     </div>
+                                                     <p className="text-white-50" style={{ fontSize: '0.95rem', lineHeight: '1.8', textAlign: 'justify' }}>
+                                                         {extraInfo.bio}
+                                                     </p>
+                                                 </>
+                                             )}
+                                         </div>
 
                                         <div>
                                             <Form.Label className="text-primary extra-small text-uppercase mb-3 fw-bold" style={{ letterSpacing: '4px' }}>Filmografía Asociada (EliteStream)</Form.Label>

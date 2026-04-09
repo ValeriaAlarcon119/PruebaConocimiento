@@ -27,10 +27,14 @@ const DirectorProfile = ({ nombre }) => {
 
     useEffect(() => {
         const fetchFoto = async () => {
+            if (!nombre) return;
             try {
-                const res = await axios.get(`https://api.themoviedb.org/3/search/person?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(nombre)}&language=es-ES`);
-                if (res.data.results && res.data.results[0]?.profile_path) {
-                    setFoto(`https://image.tmdb.org/t/p/w500${res.data.results[0].profile_path}`);
+                const res = await axios.get(`https://api.themoviedb.org/3/search/person?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(nombre)}&language=es-ES&include_adult=false`);
+                if (res.data.results && res.data.results.length > 0) {
+                    const bestMatch = res.data.results.sort((a, b) => b.popularity - a.popularity)[0];
+                    if (bestMatch.profile_path) {
+                        setFoto(`https://image.tmdb.org/t/p/w500${bestMatch.profile_path}`);
+                    }
                 }
             } catch (err) {
                 console.error("TMDB Error", err);
@@ -42,13 +46,19 @@ const DirectorProfile = ({ nombre }) => {
     }, [nombre]);
 
     return (
-        <div style={{ position: 'relative', width: '100%', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '50%', border: '4px solid rgba(255, 197, 24, 0.1)', background: 'rgba(255,255,255,0.02)' }}>
+        <div style={{ position: 'relative', width: '100%', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '50%', border: '4px solid rgba(255, 197, 24, 0.2)', background: 'rgba(255,255,255,0.02)', boxShadow: '0 0 30px rgba(245, 197, 24, 0.1)' }}>
             {loading ? (
                 <div className="d-flex align-items-center justify-content-center h-100">
                     <Spinner size="sm" animation="grow" variant="primary" />
                 </div>
             ) : foto ? (
-                <img src={foto} alt={nombre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <motion.img 
+                    initial={{ opacity: 0, scale: 1.1 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    src={foto} 
+                    alt={nombre} 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                />
             ) : (
                 <div className="d-flex align-items-center justify-content-center h-100 opacity-20">
                     <Camera size={40} />
@@ -71,8 +81,29 @@ const Directores = () => {
 
     const title = "DIVISIÓN AUTORES";
 
-    // ... variants omitted for brevity in thought, but I'll include them in full replacement ...
-    // Wait, I should not omit them if I replace a large block.
+    // ANIMATION VARIANTS
+    const titleVariants = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    };
+    const letterVariants = {
+        hidden: { opacity: 0, scale: 1.1, filter: "blur(15px)", y: 10 },
+        visible: { 
+            opacity: 1, scale: 1, filter: "blur(0px)", y: 0,
+            transition: { duration: 1.2, ease: "easeOut" }
+        }
+    };
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.08 } }
+    };
+    const itemVariants = {
+        hidden: { opacity: 0, scale: 0.9, y: 20 },
+        visible: { 
+            opacity: 1, scale: 1, y: 0, 
+            transition: { type: "spring", stiffness: 100, damping: 12 } 
+        }
+    };
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -104,14 +135,48 @@ const Directores = () => {
             const fetchBio = async () => {
                 setIsFetchingBio(true);
                 try {
-                    const res = await axios.get(`https://api.themoviedb.org/3/search/person?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(directorSeleccionado.nombre)}&language=es-ES`);
-                    if (res.data.results && res.data.results[0]) {
-                        const personId = res.data.results[0].id;
-                        const detailRes = await axios.get(`https://api.themoviedb.org/3/person/${personId}?api_key=${TMDB_API_KEY}&language=es-ES`);
+                    let searchRes = await axios.get(`https://api.themoviedb.org/3/search/person?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(directorSeleccionado.nombre)}&language=es-ES&include_adult=false`);
+                    
+                    // FALLBACK: Intentar búsqueda parcial si falla la exacta
+                    if ((!searchRes.data.results || searchRes.data.results.length === 0) && directorSeleccionado.nombre.split(' ').length > 1) {
+                         const firstPart = directorSeleccionado.nombre.split(' ')[0];
+                         searchRes = await axios.get(`https://api.themoviedb.org/3/search/person?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(firstPart)}&language=es-ES&include_adult=false`);
+                    }
+
+                    if (searchRes.data.results && searchRes.data.results.length > 0) {
+                        const sortedResults = searchRes.data.results.sort((a, b) => b.popularity - a.popularity);
+                        const person = sortedResults[0];
+                        const personId = person.id;
+                        
+                        // Intentar obtener detalles en español
+                        let detailRes = await axios.get(`https://api.themoviedb.org/3/person/${personId}?api_key=${TMDB_API_KEY}&language=es-ES`);
+                        
+                        // Si la bio está vacía, intentar en inglés
+                        if (!detailRes.data.biography) {
+                            const enRes = await axios.get(`https://api.themoviedb.org/3/person/${personId}?api_key=${TMDB_API_KEY}&language=en-US`);
+                            if (enRes.data.biography) {
+                                detailRes.data.biography = enRes.data.biography;
+                            }
+                        }
+
+                        // Si la bio está vacía, intentar generar una basada en créditos
+                        if (!detailRes.data.biography) {
+                            const creditsRes = await axios.get(`https://api.themoviedb.org/3/person/${personId}/combined_credits?api_key=${TMDB_API_KEY}&language=es-ES`);
+                            const topWorks = creditsRes.data.crew?.filter(c => c.job === 'Director').sort((a, b) => b.popularity - a.popularity).slice(0, 3).map(w => w.title || w.name).join(', ');
+                            if (topWorks) {
+                                detailRes.data.biography = `Cineasta visionario con una marca distintiva en el cine global, conocido principalmente por dirigir obras de gran impacto como ${topWorks}.`;
+                            }
+                        }
+
                         setExtraInfo({
-                            bio: detailRes.data.biography || 'No hay biografía disponible para este visionario.',
-                            foto: `https://image.tmdb.org/t/p/w500${detailRes.data.profile_path}`
+                            bio: detailRes.data.biography || 'No hay biografía detallada disponible para este autor en los registros cinematográficos.',
+                            foto: detailRes.data.profile_path ? `https://image.tmdb.org/t/p/w500${detailRes.data.profile_path}` : '',
+                            nacimiento: detailRes.data.birthday || 'Información no disponible',
+                            lugar: detailRes.data.place_of_birth || 'Origen no especificado',
+                            popularidad: detailRes.data.popularity ? detailRes.data.popularity.toFixed(1) : '0'
                         });
+                    } else {
+                        setExtraInfo({ bio: 'El visionario solicitado no cuenta con registros biográficos oficiales en TMDb.', foto: '', nacimiento: 'N/A', lugar: 'N/A', popularidad: '0' });
                     }
                 } catch (err) {
                     console.error("TMDB Detail Error", err);
@@ -121,7 +186,7 @@ const Directores = () => {
             };
             fetchBio();
         } else {
-            setExtraInfo({ bio: '', foto: '' });
+            setExtraInfo({ bio: '', foto: '', nacimiento: '', lugar: '', popularidad: '' });
         }
     }, [showModal, directorSeleccionado]);
 
@@ -166,8 +231,8 @@ const Directores = () => {
     return (
         <div style={{ backgroundColor: 'transparent', minHeight: '100vh', padding: '10px 0' }}>
             <Container className="custom-container">
-                <div className="d-flex justify-content-between align-items-end mb-4 border-bottom border-secondary pb-4" style={{ marginTop: '-10px' }}>
-                    <motion.div initial="hidden" animate="visible" variants={titleVariants} className="d-flex gap-1">
+                <div className="header-flex-mobile d-flex justify-content-between align-items-end mb-4 border-bottom border-secondary pb-4" style={{ marginTop: '-10px' }}>
+                    <motion.div initial="hidden" animate="visible" variants={titleVariants} className="d-flex flex-wrap gap-1">
                         {title.split("").map((char, index) => (
                             <motion.span 
                                 key={index} 
@@ -272,16 +337,32 @@ const Directores = () => {
                                     </Col>
                                     
                                     <Col lg={8}>
-                                        <div className="mb-5">
-                                            <Form.Label className="text-primary extra-small text-uppercase mb-3 fw-bold" style={{ letterSpacing: '4px' }}>Biografía Oficial</Form.Label>
-                                            {isFetchingBio ? (
-                                                <div className="py-3"><Spinner animation="grow" size="sm" variant="primary" /> <span className="text-dim ms-2">Recuperando datos de TMDB...</span></div>
-                                            ) : (
-                                                <p className="text-white-50" style={{ fontSize: '0.95rem', lineHeight: '1.8', textAlign: 'justify' }}>
-                                                    {extraInfo.bio}
-                                                </p>
-                                            )}
-                                        </div>
+                                         <div className="mb-4">
+                                             <Form.Label className="text-primary extra-small text-uppercase mb-3 fw-bold" style={{ letterSpacing: '4px' }}>Biografía Oficial</Form.Label>
+                                             {isFetchingBio ? (
+                                                 <div className="py-3"><Spinner animation="grow" size="sm" variant="primary" /> <span className="text-dim ms-2">Recuperando datos de TMDB...</span></div>
+                                             ) : (
+                                                 <>
+                                                     <div className="d-flex gap-4 mb-4 border-bottom border-secondary border-opacity-10 pb-3">
+                                                         <div>
+                                                             <p className="text-dim extra-small text-uppercase mb-1" style={{ fontSize: '0.6rem' }}>Nacimiento</p>
+                                                             <p className="text-white small mb-0">{extraInfo.nacimiento}</p>
+                                                         </div>
+                                                         <div>
+                                                             <p className="text-dim extra-small text-uppercase mb-1" style={{ fontSize: '0.6rem' }}>Lugar</p>
+                                                             <p className="text-white small mb-0">{extraInfo.lugar}</p>
+                                                         </div>
+                                                         <div>
+                                                             <p className="text-dim extra-small text-uppercase mb-1" style={{ fontSize: '0.6rem' }}>Popularidad</p>
+                                                             <p className="text-primary small mb-0 fw-bold">★ {extraInfo.popularidad}</p>
+                                                         </div>
+                                                     </div>
+                                                     <p className="text-white-50" style={{ fontSize: '0.95rem', lineHeight: '1.8', textAlign: 'justify' }}>
+                                                         {extraInfo.bio}
+                                                     </p>
+                                                 </>
+                                             )}
+                                         </div>
 
                                         <div>
                                             <Form.Label className="text-primary extra-small text-uppercase mb-3 fw-bold" style={{ letterSpacing: '4px' }}>Filmografía Asociada (EliteStream)</Form.Label>

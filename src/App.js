@@ -12,9 +12,12 @@ import Contacto from './pages/Contacto';
 import { Toaster } from 'sonner';
 import Lenis from 'lenis';
 import { motion, AnimatePresence } from 'framer-motion';
+import Marquee from 'react-fast-marquee';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import ProtectedRoute from './components/ProtectedRoute';
+import ScrollToTop from './components/ScrollToTop';
+import { SearchProvider } from './context/SearchContext';
 
 // --- RELAXING BOKEH SYSTEM FOR CINEMATIC FRESHNESS ---
 const CinematicAmbience = () => {
@@ -109,54 +112,62 @@ function App() {
             requestAnimationFrame(raf);
         }
         requestAnimationFrame(raf);
+        window.lenis = lenis; // Attach to window for ScrollToTop utility
         return () => lenis.destroy();
     }, []);
 
     return (
-        <Router>
-            <div style={{ position: 'relative', overflow: 'hidden', minHeight: '100vh', backgroundColor: '#0f0c1d' }}>
-                <CinematicAmbience />
+        <SearchProvider>
+            <Router>
+                <ScrollToTop />
+                <div style={{ position: 'relative', overflow: 'hidden', minHeight: '100vh', backgroundColor: '#0f0c1d' }}>
+                    <Marquee 
+                        gradient={true} 
+                        gradientColor={[15, 12, 29]} 
+                        className="py-2 border-bottom border-primary border-opacity-10"
+                        style={{ backgroundColor: 'rgba(59, 130, 246, 0.05)', fontSize: '0.7rem' }}
+                        speed={40}
+                    >
+                        <span className="text-primary fw-bold mx-4 italic">★ TMDB SYNCHRONIZED</span>
+                        <span className="text-white opacity-50 mx-4">• PREMIUM CINEMA INTERFACE</span>
+                        <span className="text-primary fw-bold mx-4 italic">★ BIENVENIDOS AL FUTURO DE LA GESTIÓN CINEMATOGRÁFICA</span>
+                        <span className="text-white opacity-50 mx-4">• ELITESTREAM PRO v2.4</span>
+                    </Marquee>
+                    
+                    <CinematicAmbience />
 
-                {/* --- CINEMATIC IDLE EFFECT: SCANLINE OVERLAY --- */}
-                <AnimatePresence>
-                    {isIdle && (
-                        <motion.div 
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="idle-scanline"
-                        />
-                    )}
-                </AnimatePresence>
-                
-                <Toaster 
-                    position="top-right" richColors closeButton theme="dark"
-                    toastOptions={{
-                        style: {
-                            background: 'rgba(10, 10, 10, 0.85)',
-                            backdropFilter: 'blur(15px)',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                            color: '#fff',
-                            borderRadius: '0px',
-                            fontFamily: 'Inter, sans-serif'
-                        }
-                    }}
-                />
-                <Layout>
-                    <Routes>
-                        <Route path="/" element={<Navigate to="/login" />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/welcome" element={<ProtectedRoute><Welcome /></ProtectedRoute>} />
-                        <Route path="/peliculas" element={<ProtectedRoute><Peliculas /></ProtectedRoute>} />
-                        <Route path="/directores" element={<ProtectedRoute><Directores /></ProtectedRoute>} />
-                        <Route path="/generos" element={<ProtectedRoute><Generos /></ProtectedRoute>} />
-                        <Route path="/paises" element={<ProtectedRoute><Paises /></ProtectedRoute>} />
-                        <Route path="/actores" element={<ProtectedRoute><Actores /></ProtectedRoute>} />
-                        <Route path="/contacto" element={<ProtectedRoute><Contacto /></ProtectedRoute>} />
-                    </Routes>
-                </Layout>
-            </div>
-        </Router>
+                    {/* --- CINEMATIC IDLE EFFECT: SCANLINE OVERLAY --- */}
+                    <AnimatePresence>
+                        {isIdle && (
+                            <motion.div 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="idle-scanline"
+                            />
+                        )}
+                    </AnimatePresence>
+                    
+                    <Toaster position="top-right" richColors theme="dark" />
+                    
+                    <Layout>
+                        <Routes>
+                            <Route path="/" element={<Navigate to="/login" />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route element={<ProtectedRoute />}>
+                                <Route path="/welcome" element={<Welcome />} />
+                                <Route path="/peliculas" element={<Peliculas />} />
+                                <Route path="/directores" element={<Directores />} />
+                                <Route path="/generos" element={<Generos />} />
+                                <Route path="/actores" element={<Actores />} />
+                                <Route path="/paises" element={<Paises />} />
+                                <Route path="/contacto" element={<Contacto />} />
+                            </Route>
+                        </Routes>
+                    </Layout>
+                </div>
+            </Router>
+        </SearchProvider>
     );
 }
 

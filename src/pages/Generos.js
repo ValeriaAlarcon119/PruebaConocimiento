@@ -1,291 +1,220 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Container, Table, Button, Modal, Form, Spinner } from 'react-bootstrap';
-import { toast } from 'react-toastify';
+import { Container, Button, Modal, Form, Spinner, Row, Col } from 'react-bootstrap';
+import { toast } from 'sonner';
 import api from '../services/api';
-import { FaEdit, FaTrash, FaPlus, FaEye } from 'react-icons/fa';
-import '../App.css';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+    Plus, 
+    Trash2, 
+    Edit2, 
+    Tag, 
+    Layers, 
+    CheckCircle,
+    Database
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import '../App.css';
 
 const Generos = () => {
     const navigate = useNavigate();
     const [generos, setGeneros] = useState([]);
+    const [peliculas, setPeliculas] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [generoSeleccionado, setGeneroSeleccionado] = useState(null);
-    const [formData, setFormData] = useState({
-        nombre: '',
-        descripcion: ''
-    });
+    const [formData, setFormData] = useState({ nombre: '' });
     const [loading, setLoading] = useState(true);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [peliculas, setPeliculas] = useState([]);
-    const [showDetailsModal, setShowDetailsModal] = useState(false);
 
-    useEffect(() => {
-        const checkAuth = () => {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                toast.error('Por favor, inicie sesión para continuar.');
-                navigate('/login'); 
-            } else {
-                setIsAuthenticated(true);
-            }
-        };
-        checkAuth();
-    }, [navigate]);
+    const title = "GESTIÓN DE GÉNEROS";
 
-    useEffect(() => {
-        const fetchData = async () => {
-            if (!isAuthenticated) return;
-            setLoading(true);
-            await cargarGeneros();
-            setLoading(false);
-        };
-        fetchData();
-    }, [isAuthenticated]);
+    // ANIMATION VARIANTS
+    const titleVariants = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    };
+    const letterVariants = {
+        hidden: { opacity: 0, scale: 1.1, filter: "blur(15px)", y: 10 },
+        visible: { 
+            opacity: 1, scale: 1, filter: "blur(0px)", y: 0,
+            transition: { duration: 0.8, ease: "easeOut" }
+        }
+    };
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.05 } }
+    };
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 }
+    };
 
-    useEffect(() => {
-        const fetchPeliculas = async () => {
-            try {
-                const response = await api.get('/peliculas');
-                const data = Array.isArray(response.data) ? response.data : (response.data || []);
-                setPeliculas(data);
-            } catch (error) {
-                if (error.response && error.response.status === 401) {
-                    toast.error('Sesión expirada. Por favor, inicie sesión nuevamente.');
-                    navigate('/login');
-                } else {
-                    toast.error('Error al cargar las películas');
-                }
-            }
-        };
-        fetchPeliculas();
-    }, [navigate]);
-
-    const cargarGeneros = useCallback(async () => {
+    const fetchData = useCallback(async () => {
         setLoading(true);
         try {
-            const response = await api.get('/generos');
-            const data = Array.isArray(response.data) ? response.data : (response.data.$values || []);
-            setGeneros(data);
-        } catch (error) {
-            if (error.response && error.response.status === 401) {
-                toast.error('Sesión expirada. Por favor, inicie sesión nuevamente.');
+            const token = localStorage.getItem('token');
+            if (!token) {
                 navigate('/login');
-            } else {
-                toast.error('Error al cargar los géneros');
+                return;
             }
+            const [resGen, resPelis] = await Promise.all([
+                api.get('/generos'),
+                api.get('/peliculas')
+            ]);
+            
+            const mapData = (res) => Array.isArray(res.data) ? res.data : (res.data.$values || []);
+            setGeneros(mapData(resGen));
+            setPeliculas(mapData(resPelis));
+        } catch (error) {
+            toast.error('Error de sincronización con la base de géneros');
         } finally {
             setLoading(false);
         }
     }, [navigate]);
 
     useEffect(() => {
-        cargarGeneros();
-    }, [cargarGeneros]);
-
-    const handleShowModal = (genero = null) => {
-        if (genero) {
-            setGeneroSeleccionado(genero);
-            setFormData({
-                nombre: genero.nombre
-            });
-        } else {
-            setGeneroSeleccionado(null);
-            setFormData({
-                nombre: ''
-            });
-        }
-        setShowModal(true);
-    };
-
-    const handleCloseModal = () => {
-        setShowModal(false);
-        setGeneroSeleccionado(null);
-        setFormData({
-            nombre: ''
-        });
-    };
+        fetchData();
+    }, [fetchData]);
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
-
-    const handleShowDetails = (genero) => {
-        setGeneroSeleccionado(genero);
-        setShowDetailsModal(true);
-    };
-
-    const handleCloseDetailsModal = () => {
-        setShowDetailsModal(false);
-        setGeneroSeleccionado(null);
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const generoExistente = generos.find(
-                g => g.nombre.toLowerCase() === formData.nombre.toLowerCase() &&
-                    g.id !== generoSeleccionado?.id
-            );
-
-            if (generoExistente) {
-                toast.error('Ya existe un género con este nombre');
-                return;
-            }
-
-            const generoData = {
-                id: generoSeleccionado ? generoSeleccionado.id : 0,
-                nombre: formData.nombre
-            };
-
             if (generoSeleccionado) {
-                await api.put(`/generos/${generoSeleccionado.id}`, generoData);
-                toast.success('Género actualizado exitosamente');
+                await api.put(`/generos/${generoSeleccionado.id}`, formData);
+                toast.success('Clasificación actualizada');
             } else {
-                await api.post('/generos', generoData);
-                toast.success('Género creado exitosamente');
+                await api.post('/generos', formData);
+                toast.success('Nuevo género indexado');
             }
-            handleCloseModal();
-            cargarGeneros();
+            setShowModal(false);
+            fetchData();
         } catch (error) {
-            console.error('Error:', error);
-            if (error.response?.data?.message) {
-                toast.error(error.response.data.message);
-            } else {
-                toast.error('Error al guardar el género');
-            }
+            toast.error('Error en la persistencia de datos');
         }
     };
 
-    const handleDelete = async (id) => {
-        try {
-            const generoEnUso = peliculas.some(pelicula => pelicula.generoId === id);
+    const eliminarGenero = async (id) => {
+        const enUso = peliculas.some(p => p.generoId === id);
+        if (enUso) {
+            toast.error('Restricción de integridad: Género vinculado a obras existentes');
+            return;
+        }
 
-            if (generoEnUso) {
-                toast.error('No es permitido borrar este género porque está en uso en la aplicación');
-                return;
-            }
-
-            if (window.confirm('¿Estás seguro de que deseas eliminar este género?')) {
+        if (window.confirm('¿Confirmar purga de esta categoría?')) {
+            try {
                 await api.delete(`/generos/${id}`);
-                cargarGeneros();
-                toast.success('Género eliminado exitosamente');
+                toast.success('Registro eliminado');
+                fetchData();
+            } catch (error) {
+                toast.error('Fallo en la eliminación');
             }
-        } catch (error) {
-            console.error('Error:', error);
-            toast.error('Error al eliminar el género');
         }
     };
 
     return (
-        <div className="page-background">
-            <div className="custom-container">
-                <h2 className="page-title">Gestión de Géneros</h2>
-                <p className="text-center text-white mb-4">
-                    Aquí encuentras información sobre los géneros cinematográficos y puedes gestionar esta información
-                </p>
-                
-                <div className="table-wrapper">
-                <div className="d-flex justify-content-end mb-4" style={{ marginTop: '-20px' }}>
-                    <Button variant="primary" onClick={() => handleShowModal()} className="d-flex align-items-center gap-2 new-genero-button">
-                        <FaPlus /> Agregar
-                    </Button>
-                </div>
-                    {loading ? (
-                        
-                        <div className="text-center">
-                            <Spinner animation="border" role="status">
-                                <span className="visually-hidden">Cargando...</span>
-                            </Spinner>
-                            <p className="loading-message">Cargando...</p>
-                        </div>
-                    ) : (
-                        <div className="table-responsive">
-                            <Table striped bordered hover style={{ width: '70%', margin: '0 auto' }}>
-                                <thead>
-                                    <tr>
-                                        <th style={{ width: '50%' }}>Nombre</th>
-                                        <th style={{ width: '50%' }}>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {generos.map((genero) => (
-                                        <tr key={genero.id}>
-                                            <td>{genero.nombre}</td>
-                                            <td>
-                                                <FaEye className="icon fa-eye" onClick={() => handleShowDetails(genero)} title="Ver detalles" />
-                                                <FaEdit className="icon fa-edit" onClick={() => handleShowModal(genero)} title="Editar" />
-                                                <FaTrash className="icon fa-trash" onClick={() => handleDelete(genero.id)} title="Eliminar" />
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </Table>
-                        </div>
-                    )}
-                </div>
-                
-                
-                <Modal show={showModal} onHide={handleCloseModal}>
-                    <Modal.Header closeButton className="bg-primary text-white">
-                        <Modal.Title className="text-center w-100">
-                            {generoSeleccionado ? 'Editar Género' : 'Nuevo Género'}
-                        </Modal.Title>
-                    </Modal.Header>
-                    <Form onSubmit={handleSubmit}>
-                        <Modal.Body>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Nombre</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="nombre"
-                                    value={formData.nombre}
-                                    onChange={handleInputChange}
-                                    required
-                                    style={{ borderRadius: '20px' }}
-                                />
-                            </Form.Group>
-                        </Modal.Body>
-                        <Modal.Footer className="d-flex justify-content-center">
-                            <Button variant="danger" onClick={handleCloseModal}>
-                                Cerrar
-                            </Button>
-                            <Button variant="primary" type="submit">
-                                Guardar
-                            </Button>
-                        </Modal.Footer>
-                    </Form>
-                </Modal>
-
-                <Modal show={showDetailsModal} onHide={handleCloseDetailsModal}>
-                    <Modal.Header closeButton>
-                        <Modal.Title className="text-center w-100">Detalles del Género</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Nombre</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    value={generoSeleccionado?.nombre || ''}
-                                    disabled={true}
-                                />
-                            </Form.Group>
-                        </Form>
-                    </Modal.Body>
-                    <Modal.Footer className="d-flex justify-content-center">
-                        <Button variant="danger" onClick={handleCloseDetailsModal}>
-                            Cerrar
+        <div style={{ backgroundColor: 'transparent', minHeight: '100vh', padding: '10px 0' }}>
+            <Container className="custom-container">
+                <div className="header-flex-mobile d-flex justify-content-between align-items-end mb-4 border-bottom border-secondary pb-4" style={{ marginTop: '-10px' }}>
+                    <motion.div initial="hidden" animate="visible" variants={titleVariants} className="d-flex flex-wrap gap-1">
+                        {title.split("").map((char, index) => (
+                            <motion.span 
+                                key={index} 
+                                variants={letterVariants}
+                                className="page-title mb-0" 
+                                style={{ 
+                                    fontSize: '3.5rem', 
+                                    fontWeight: '900', 
+                                    letterSpacing: '-2px', 
+                                    display: 'inline-block',
+                                    lineHeight: '1'
+                                }}
+                            >
+                                {char === " " ? "\u00A0" : char}
+                            </motion.span>
+                        ))}
+                    </motion.div>
+                    
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Button className="btn-premium d-flex align-items-center gap-3" onClick={() => { setGeneroSeleccionado(null); setFormData({ nombre: '' }); setShowModal(true); }}>
+                            <Plus size={18} /> Nuevo Género
                         </Button>
-                    </Modal.Footer>
-                </Modal>
-            </div>
+                    </motion.div>
+                </div>
+                
+                <p className="text-dim extra-small text-uppercase mb-5 mt-1" style={{ letterSpacing: '8px', fontWeight: '400' }}>
+                    <Layers size={12} className="text-primary me-2" /> Content Categorization Subsystem
+                </p>
+
+                {loading ? (
+                    <div className="text-center py-5">
+                        <Spinner animation="border" style={{ color: 'var(--primary)' }} />
+                    </div>
+                ) : (
+                    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="row g-4">
+                        {generos.map((gen) => (
+                            <Col key={gen.id} xl={3} lg={4} md={6}>
+                                <motion.div variants={itemVariants} className="movie-card-premium p-4 d-flex justify-content-between align-items-center">
+                                    <div className="d-flex align-items-center gap-3">
+                                        <div className="p-2 rounded-circle" style={{ background: 'rgba(245, 197, 24, 0.1)' }}>
+                                            <Tag size={16} className="text-primary" />
+                                        </div>
+                                        <h4 className="m-0 text-white h6 fw-bold" style={{ letterSpacing: '1px' }}>{gen.nombre}</h4>
+                                    </div>
+                                    <div className="d-flex gap-2">
+                                        <button className="icon-btn-premium text-info" onClick={() => { setGeneroSeleccionado(gen); setFormData({ nombre: gen.nombre }); setShowModal(true); }}>
+                                            <Edit2 size={14} />
+                                        </button>
+                                        <button className="icon-btn-premium text-danger" onClick={() => eliminarGenero(gen.id)}>
+                                            <Trash2 size={14} />
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            </Col>
+                        ))}
+                    </motion.div>
+                )}
+
+                <div className="mt-5 pt-5 opacity-30 text-center">
+                    <Database size={24} className="text-primary mb-3" />
+                    <p className="extra-small text-dim text-uppercase" style={{ letterSpacing: '4px' }}>Integridad Referential Activa</p>
+                </div>
+            </Container>
+
+            <AnimatePresence>
+                {showModal && (
+                    <Modal show={true} onHide={() => setShowModal(false)} centered contentClassName="premium-modal shadow-lg">
+                        <Modal.Header closeButton closeVariant="white" className="border-0 p-4">
+                            <Modal.Title className="page-title h4 mb-0">
+                                {generoSeleccionado ? 'Modificar Taxonomía' : 'Nueva Clasificación'}
+                            </Modal.Title>
+                        </Modal.Header>
+                        <Form onSubmit={handleSubmit}>
+                            <Modal.Body className="p-4 pt-0">
+                                <Form.Group>
+                                    <Form.Label className="text-dim extra-small text-uppercase mb-3 fw-bold">Nombre del Género</Form.Label>
+                                    <Form.Control 
+                                        name="nombre" 
+                                        value={formData.nombre} 
+                                        onChange={handleInputChange} 
+                                        required 
+                                        placeholder="Ej: Thriller Cyberpunk" 
+                                        className="premium-input py-3" 
+                                    />
+                                </Form.Group>
+                            </Modal.Body>
+                            <Modal.Footer className="border-0 p-4">
+                                <Button className="btn-premium w-100 py-3" type="submit">
+                                    <CheckCircle size={18} className="me-2" /> Confirmar
+                                </Button>
+                            </Modal.Footer>
+                        </Form>
+                    </Modal>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
 
-export default Generos; 
+export default Generos;

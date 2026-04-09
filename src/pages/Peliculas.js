@@ -3,7 +3,8 @@ import { Button, Modal, Form, Spinner, Badge, Container, Row, Col } from 'react-
 import { toast } from 'sonner';
 import api from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import SimpleParallax from 'simple-parallax-js';
+import Tilt from 'react-parallax-tilt';
+import confetti from 'canvas-confetti';
 import { 
     Plus, 
     Edit3, 
@@ -12,16 +13,24 @@ import {
     Search, 
     Film, 
     Clapperboard, 
-    CheckCircle2
+    CheckCircle2,
+    Trash2, 
+    Edit2, 
+    Globe, 
+    CheckCircle,
+    Camera,
+    Users
 } from 'lucide-react';
 import '../App.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useSearch } from '../context/SearchContext';
 
 const TMDB_API_KEY = 'c7da69c9651075b9afc262f3671486a5';
 
 const Peliculas = () => {
     const navigate = useNavigate();
+    const { globalSearchQuery, setGlobalSearchQuery } = useSearch();
     const [peliculas, setPeliculas] = useState([]);
     const [generos, setGeneros] = useState([]);
     const [directores, setDirectores] = useState([]);
@@ -41,6 +50,8 @@ const Peliculas = () => {
     const [loading, setLoading] = useState(true);
     const [isGenerating, setIsGenerating] = useState(false);
     const [isSearching, setIsSearching] = useState(false);
+    const [filterQuery, setFilterQuery] = useState(''); // FOR GLOBAL FILTER
+    const [tmdbSuggestions, setTmdbSuggestions] = useState([]); // FOR LIVE SUGGESTIONS IN MODAL
 
     // SMARTER STAGGERED CASCADE VARIANTS
     const containerVariants = {
@@ -126,17 +137,7 @@ const Peliculas = () => {
             const res = await axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${searchQuery}&language=es-ES`);
             if (res.data.results.length > 0) {
                 const film = res.data.results[0];
-                const videoRes = await axios.get(`https://api.themoviedb.org/3/movie/${film.id}/videos?api_key=${TMDB_API_KEY}`);
-                const trailer = videoRes.data.results.find(v => v.type === 'Trailer' && v.site === 'YouTube')?.key || '';
-
-                setFormData({
-                    ...formData,
-                    titulo: film.title,
-                    resena: film.overview,
-                    portada: `https://image.tmdb.org/t/p/w500${film.poster_path}`,
-                    trailer: trailer
-                });
-                toast.success('Metadatos TMDb sincronizados');
+                selectFilmFromTmdb(film);
             }
         } catch (error) {
             toast.error('Fallo en TMDb Intelligence');
@@ -145,24 +146,60 @@ const Peliculas = () => {
         }
     };
 
+    const selectFilmFromTmdb = async (film) => {
+        setIsSearching(true);
+        try {
+            const videoRes = await axios.get(`https://api.themoviedb.org/3/movie/${film.id}/videos?api_key=${TMDB_API_KEY}`);
+            const trailer = videoRes.data.results.find(v => v.type === 'Trailer' && v.site === 'YouTube')?.key || '';
+
+            setFormData({
+                ...formData,
+                titulo: film.title,
+                resena: film.overview ? `SINOPSIS OFICIAL: ${film.overview}\n\n[ANÁLISIS DE OBRA]: Esta producción destaca por su profundidad técnica y narrativa, ofreciendo una visión única del cine contemporáneo.` : 'Descripción reservada para miembros de la red EliteStream.',
+                portada: `https://image.tmdb.org/t/p/w500${film.poster_path}`,
+                trailer: trailer
+            });
+            setTmdbSuggestions([]);
+            setSearchQuery(film.title);
+            toast.success('Metadatos TMDb sincronizados');
+        } catch (error) {
+            toast.error('Error al sincronizar película');
+        } finally {
+            setIsSearching(false);
+        }
+    };
+
+    // LIVE SUGGESTIONS EFFECT
+    useEffect(() => {
+        const fetchSuggestions = async () => {
+            if (searchQuery.length > 2 && showModal) {
+                try {
+                    const res = await axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${searchQuery}&language=es-ES`);
+                    setTmdbSuggestions(res.data.results.slice(0, 5));
+                } catch (e) {}
+            } else {
+                setTmdbSuggestions([]);
+            }
+        };
+        const timer = setTimeout(fetchSuggestions, 500);
+        return () => clearTimeout(timer);
+    }, [searchQuery, showModal]);
+
     const generarReseñaIA = () => {
         if (!formData.titulo) return;
         setIsGenerating(true);
-        setFormData({ ...formData, resena: '' }); // Clear for typing effect
-        const resenaPro = `[ANÁLISIS IA 2026] » '${formData.titulo}' redefine los límites de la cinematografía moderna. Una sinergia técnica impecable que fusiona una narrativa disruptiva con una potencia visual abrumadora.`;
-        
-        let i = 0;
-        const speed = 15; // Type speed
-        const timer = setInterval(() => {
-            if (i < resenaPro.length) {
-                setFormData(prev => ({ ...prev, resena: resenaPro.substring(0, i + 1) }));
-                i++;
-            } else {
-                clearInterval(timer);
-                setIsGenerating(false);
-                toast.success('Crítica optimizada');
-            }
-        }, speed);
+        setTimeout(() => {
+            const reviews = [
+                `CRÍTICA ELITESTREAM: "${formData.titulo}" se erige como una catedral cinematográfica en la era moderna. Bajo una dirección técnica impecable, la obra teje una narrativa de texturas profundas donde cada fotograma parece una pintura al óleo en movimiento. Es una experiencia visceral que no solo entretiene, sino que desafía los sentidos del espectador.`,
+                `VISIÓN ELITE: En este despliegue de virtuosismo visual, "${formData.titulo}" explora las fronteras de la psique humana con una elegancia reservada solo para los grandes clásicos. La interpretación se siente orgánica, cruda y magnética, elevando el guion a un nivel de trascendencia donde la trama y la emoción se funden en un solo aliento.`,
+                `ANÁLISIS PRO: Con una arquitectura narrativa audaz, "${formData.titulo}" rompe el molde de los géneros convencionales para ofrecernos un viaje introspectivo hacia lo desconocido. La sofisticación del montaje y la paleta de colores midnight-gold crean una atmósfera hipnótica de la cual es imposible escapar.`,
+                `RESUMEN EJECUTIVO: La pieza "${formData.titulo}" es un triunfo absoluto de la técnica sobre la forma. Cada secuencia está meticulosamente diseñada para provocar una catarsis emocional en el espectador, apoyada por una banda sonora que subraya la solemnidad de cada diálogo. Representa el estándar de oro de EliteStream.`
+            ];
+            const selected = reviews[Math.floor(Math.random() * reviews.length)];
+            setFormData(prev => ({ ...prev, resena: selected }));
+            setIsGenerating(false);
+            toast.success('Análisis Cinematográfico optimizado por IA Elite');
+        }, 1500);
     };
 
     const handleInputChange = (e) => {
@@ -180,9 +217,17 @@ const Peliculas = () => {
             };
 
             if (peliculaSeleccionada) {
-                await api.put(`/peliculas/${peliculaSeleccionada.id}`, payload);
+                await api.put(`/peliculas/${peliculaSeleccionada.id}`, formData);
+                toast.success('Metadatos actualizados');
             } else {
-                await api.post('/peliculas', payload);
+                await api.post('/peliculas', formData);
+                toast.success('Nueva obra indexada con éxito');
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#f5c518', '#ffffff', '#3b82f6']
+                });
             }
             setShowModal(false);
             fetchData();
@@ -191,34 +236,96 @@ const Peliculas = () => {
         }
     };
 
+    const handleAutoIndex = async () => {
+        setLoading(true);
+        try {
+            toast.loading('Analizando tendencias cinematográficas...');
+            const res = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_API_KEY}&language=es-ES&page=1`);
+            const popular = res.data.results.slice(0, 12); // Index 12 movies
+            
+            for (const film of popular) {
+                const payload = {
+                    titulo: film.title,
+                    resena: film.overview || 'Sin descripción disponible.',
+                    portada: `https://image.tmdb.org/t/p/w500${film.poster_path}`,
+                    trailer: '',
+                    generoId: generos[0]?.id || 1,
+                    directorId: directores[0]?.id || 1,
+                    paisId: 1
+                };
+                await api.post('/peliculas', payload);
+            }
+            
+            toast.dismiss();
+            toast.success(`${popular.length} nuevas obras maestras indexadas en el sistema.`);
+            confetti({
+                particleCount: 200,
+                spread: 100,
+                origin: { y: 0.5 }
+            });
+            fetchData();
+        } catch (error) {
+            toast.error('Error durante la indexación masiva');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div style={{ backgroundColor: 'transparent', minHeight: '100vh', padding: '10px 0' }}>
             <Container className="custom-container">
-                <div className="d-flex justify-content-between align-items-end mb-4 border-bottom border-secondary pb-4" style={{ marginTop: '-10px' }}>
-                    <motion.div initial="hidden" animate="visible" variants={titleVariants} className="d-flex gap-2">
-                        {title.split("").map((char, index) => (
-                            <motion.span 
-                                key={index} 
-                                variants={letterVariants}
-                                className="page-title mb-0" 
-                                style={{ 
-                                    fontSize: '5rem', 
-                                    fontWeight: '900', 
-                                    letterSpacing: '5px', 
-                                    display: 'inline-block',
-                                    lineHeight: '1'
-                                }}
-                            >
-                                {char === " " ? "\u00A0" : char}
-                            </motion.span>
-                        ))}
-                    </motion.div>
+                <div className="header-flex-mobile d-flex justify-content-between align-items-end mb-4 border-bottom border-secondary pb-4" style={{ marginTop: '-10px' }}>
+                    <div className="d-flex flex-column gap-3 w-100">
+                        <motion.div initial="hidden" animate="visible" variants={titleVariants} className="d-flex flex-wrap gap-1">
+                            {title.split("").map((char, index) => (
+                                <motion.span 
+                                    key={index} 
+                                    variants={letterVariants}
+                                    className="page-title mb-0" 
+                                    style={{ 
+                                        fontSize: '5rem', 
+                                        fontWeight: '900', 
+                                        letterSpacing: '5px', 
+                                        display: 'inline-block',
+                                        lineHeight: '1'
+                                    }}
+                                >
+                                    {char === " " ? "\u00A0" : char}
+                                </motion.span>
+                            ))}
+                        </motion.div>
+                        
+                        <div className="d-flex gap-3 align-items-center w-50 w-mobile-100">
+                            <Search size={18} className="text-primary" />
+                            <Form.Control 
+                                type="text" 
+                                placeholder="FILTRAR POR TÍTULO EN TIEMPO REAL..." 
+                                className="premium-input py-2" 
+                                style={{ fontSize: '0.7rem', letterSpacing: '2px', borderBottom: '1px solid var(--primary)' }}
+                                value={globalSearchQuery}
+                                onChange={(e) => setGlobalSearchQuery(e.target.value)}
+                            />
+                        </div>
+                    </div>
                     
-                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                        <Button className="btn-premium d-flex align-items-center gap-3" onClick={() => { setPeliculaSeleccionada(null); setFormData({titulo:'', resena:'', portada:'', trailer:'', generoId:'', directorId:'', actoresIds:[], paisId:'1'}); setShowModal(true); }}>
-                            <Plus size={18} /> Indexar Obra
-                        </Button>
-                    </motion.div>
+                    <div className="d-flex gap-2">
+                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                            <Button 
+                                variant="outline-primary"
+                                className="d-flex align-items-center gap-2 px-3 border-opacity-10 text-primary"
+                                onClick={handleAutoIndex}
+                                style={{ background: 'rgba(59, 130, 246, 0.05)', fontSize: '0.8rem' }}
+                            >
+                                <Sparkles size={16} /> Auto-Index
+                            </Button>
+                        </motion.div>
+
+                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                            <Button className="btn-premium d-flex align-items-center gap-3" onClick={() => { setPeliculaSeleccionada(null); setFormData({titulo:'', resena:'', portada:'', trailer:'', generoId:'', directorId:'', actoresIds:[], paisId:'1'}); setShowModal(true); setTmdbSuggestions([]); }}>
+                                <Plus size={18} /> Indexar Obra
+                            </Button>
+                        </motion.div>
+                    </div>
                 </div>
                 
                 <p className="text-dim extra-small text-uppercase mb-5 mt-1" style={{ letterSpacing: '8px', fontWeight: '400' }}>
@@ -233,18 +340,25 @@ const Peliculas = () => {
                     <motion.div 
                         variants={containerVariants} 
                         initial="hidden" 
-                        whileInView="visible" 
-                        viewport={{ once: true, amount: 0.1 }}
+                        animate="visible" 
                         className="row g-5 d-flex justify-content-center"
                     >
-                        {peliculas.map(p => (
+                        {peliculas
+                          .filter(p => !globalSearchQuery || p.titulo.toLowerCase().startsWith(globalSearchQuery.toLowerCase()))
+                          .map(p => (
                             <Col key={p.id} xl={3} lg={4} md={6}>
                                 <motion.div variants={itemVariants}>
-                                    <div className="movie-card-premium">
+                                    <Tilt 
+                                        tiltMaxAngleX={15} 
+                                        tiltMaxAngleY={15} 
+                                        perspective={1000} 
+                                        scale={1.05} 
+                                        transitionSpeed={1500}
+                                        gyroscope={true}
+                                        className="movie-card-premium"
+                                    >
                                         <div className="card-img-container" style={{ borderRadius: '12px' }}>
-                                            <SimpleParallax delay={0.6} scale={1.5}>
-                                                <img src={p.portada || 'https://via.placeholder.com/500x750?text=No+Poster'} alt={p.titulo} style={{ borderRadius: '12px' }} />
-                                            </SimpleParallax>
+                                            <img src={p.portada || 'https://via.placeholder.com/500x750?text=No+Poster'} alt={p.titulo} style={{ borderRadius: '12px' }} />
                                             <div className="movie-overlay" style={{ borderRadius: '12px' }}></div>
                                             
                                             <div className="position-absolute bottom-0 start-0 p-4 w-100" style={{ zIndex: 10 }}>
@@ -258,7 +372,7 @@ const Peliculas = () => {
                                                 </div>
                                                 
                                                 <div className="d-flex gap-2 mt-4">
-                                                    <button className="btn-link-premium flex-fill justify-content-center" onClick={() => { setPeliculaSeleccionada(p); setFormData(p); setShowModal(true); }}>
+                                                    <button className="btn-link-premium flex-fill justify-content-center" onClick={() => { setPeliculaSeleccionada(p); setFormData(p); setShowModal(true); setTmdbSuggestions([]); }}>
                                                         <Edit3 size={14} /> Editar
                                                     </button>
                                                     <button className="btn-link-premium flex-fill justify-content-center text-primary" onClick={() => window.open(`https://www.youtube.com/watch?v=${p.trailer}`, '_blank')}>
@@ -267,7 +381,7 @@ const Peliculas = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </Tilt>
                                 </motion.div>
                             </Col>
                         ))}
@@ -285,14 +399,49 @@ const Peliculas = () => {
                         </Modal.Header>
                         <Form onSubmit={handleSubmit}>
                             <Modal.Body className="premium-body pt-0">
-                                <div className="tmdb-search-box text-center bg-transparent border-0 mb-4" style={{ background: 'rgba(245, 197, 24, 0.02)', padding: '20px', borderBottom: '1px solid rgba(255, 255, 255, 0.05)', marginTop: '-20px' }}>
+                                <div className="tmdb-search-box text-center bg-transparent border-0 mb-4" style={{ background: 'rgba(245, 197, 24, 0.02)', padding: '20px', borderBottom: '1px solid rgba(255, 255, 255, 0.05)', marginTop: '-20px', position: 'relative' }}>
                                     <div className="d-flex flex-column gap-2 w-100 mx-auto" style={{ maxWidth: '600px' }}>
                                         <div className="d-flex gap-3">
-                                            <Form.Control type="text" placeholder="BUSCAR METADATOS EN TMDB POR TÍTULO..." className="premium-input py-2 text-center" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} style={{ letterSpacing: '2px', fontSize: '0.7rem' }} />
+                                            <Form.Control type="text" placeholder="ESCRIBE EL NOMBRE DE LA PELÍCULA PARÁ SUGERENCIAS..." className="premium-input py-2 text-center" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} style={{ letterSpacing: '2px', fontSize: '0.7rem' }} />
                                             <Button className="btn-premium px-4" onClick={searchTMDB} disabled={isSearching}>
                                                 BUSCAR
                                             </Button>
                                         </div>
+
+                                        {/* SUGGESTIONS DROPDOWN */}
+                                        <AnimatePresence>
+                                            {tmdbSuggestions.length > 0 && (
+                                                <motion.div 
+                                                    initial={{ opacity: 0, y: -10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0 }}
+                                                    className="suggestions-dropdown shadow-lg position-absolute w-100" 
+                                                    style={{ 
+                                                        top: '100%', left: '0', zIndex: 1000, 
+                                                        background: 'rgba(5, 5, 5, 0.95)', 
+                                                        backdropFilter: 'blur(10px)',
+                                                        border: '1px solid rgba(245, 197, 24, 0.3)',
+                                                        marginTop: '5px', borderRadius: '8px',
+                                                        overflow: 'hidden'
+                                                    }}
+                                                >
+                                                    {tmdbSuggestions.map(suggestion => (
+                                                        <div 
+                                                            key={suggestion.id}
+                                                            className="p-3 border-bottom border-secondary border-opacity-10 d-flex gap-3 align-items-center suggestion-item"
+                                                            style={{ cursor: 'pointer', transition: 'all 0.3s' }}
+                                                            onClick={() => selectFilmFromTmdb(suggestion)}
+                                                        >
+                                                            <img src={suggestion.poster_path ? `https://image.tmdb.org/t/p/w92${suggestion.poster_path}` : 'https://via.placeholder.com/92x138'} style={{ width: '40px', borderRadius: '4px' }} alt="" />
+                                                            <div className="text-start">
+                                                                <h5 className="text-white small mb-0">{suggestion.title}</h5>
+                                                                <p className="text-dim extra-small mb-0">{suggestion.release_date ? suggestion.release_date.split('-')[0] : 'TBD'}</p>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
                                     </div>
                                 </div>
 
